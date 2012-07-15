@@ -1,0 +1,17 @@
+{
+  "name": "redoak",
+  "description": "Rapid HTML5 development kit",
+  "version": "0.1.0",
+  "author": "Benjamin Stover <benjamin.stover@gmail.com>",
+  "contributors": [ ],
+  "dependencies": {
+    "express": "*",
+    "html5": "*",
+    "jsdom": "*",
+    "mustache": "*",
+    "uglify-js": "*",
+    "websocket": "*"
+  },
+  "keywords": ["framework", "html5", "web"],
+  "bin": { "redoak": "./bin/redoak" }
+}

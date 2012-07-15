@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8'/>
+    <title>TODO app</title>
+    <link rel='stylesheet' href='example.css'></link>
+  </head>
+  <body>
+    <template name='app'>
+      <div class='app'>
+        <h1>Todos</h1>
+        <form oak-onsubmit='newTodo'>
+          <input name='input' type='text'
+                 placeholder='What needs to be done?' autocomplete='off'>
+          </input>
+        </form>
+      </div>
+    </template>
+
+    <template name='todo'>
+      <div class='todo'>
+        <input id='todo-item-{{id}}' type='checkbox' autocomplete='off'></input>
+        <label for='todo-item-{{id}}'>{{text}}</label>
+      </div>
+    </template>
+
+    <script>
+      BaseWidget.event('app').listen({
+        newTodo: function(e) {
+          var input = e.target.elements.input;
+          var value = input.value.replace(/^\s+|\s+$/, '');
+          if (value) {
+            var widget = new BaseWidget(['todo', 'preserve'], {
+              text: value,
+              id: this.children_.length + 1
+            });
+            widget.render(this);
+            this.getElement().insertBefore(
+                widget.getElement(),
+                document.querySelector('form').nextSibling);
+          }
+          input.value = '';
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      var app = new BaseWidget(['app', 'preserve'], { id: 'app' });
+      app.render(document.body);
+    </script>
+  </body>
+</html>

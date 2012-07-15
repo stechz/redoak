@@ -1,0 +1,39 @@
+body {
+  font-family: Helvetica;
+  font-size: 16px;
+  background-color: #f0f0f0;
+}
+
+div.app {
+  padding: 20px;
+  background-color: white;
+  margin: auto;
+  width: 500px;
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+input[type=checkbox] {
+}
+
+input[type=text] {
+  margin: auto;
+  width: 420px;
+  font-size: 16px;
+  padding: 3px;
+  margin-bottom: 18px;
+}
+
+div.todo {
+  text-align: left;
+  -moz-user-select: none;
+}
+
+label {
+  font-size: 16px;
+  line-height: 1.8;
+}
+

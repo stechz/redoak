@@ -1,0 +1,22 @@
+var dependencies = require('./lib/dependencies');
+var express = require('express');
+var middleware = require('./lib/middleware');
+var mongodb = require('mongodb');
+var path = require('path');
+
+var mongo = new mongodb.Db(
+    'crowdyoga', new mongodb.Server('127.0.0.1', 27017, {}));
+
+// Say something when errors happen.
+dependencies.on('error', function(tree, fileObj) {
+  console.error('Error for', fileObj.name + ':', fileObj.error);
+});
+
+var app = express.createServer();
+app.configure(function() {
+  var main = { name: 'main.js', type: 'js' };
+  app.use('/js', redoak.middleware(['public']));
+  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+  app.use(express.bodyParser());
+  redoak.rapid(app, '/rapid/');
+});
