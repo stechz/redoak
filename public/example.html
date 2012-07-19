@@ -14,6 +14,7 @@
                  placeholder='What needs to be done?' autocomplete='off'>
           </input>
         </form>
+        <use mixins='todo'>{ "id": 1, "text": "remember the milk"}</use>
       </div>
     </template>
 
@@ -23,6 +24,8 @@
         <label for='todo-item-{{id}}'>{{text}}</label>
       </div>
     </template>
+
+    <use mixins='app'></use>
 
     <script>
       BaseWidget.event('app').listen({
@@ -34,9 +37,8 @@
               text: value,
               id: this.children_.length + 1
             });
-            widget.render(this);
-            this.getElement().insertBefore(
-                widget.getElement(),
+            this.addChild(widget);
+            widget.render(this.getElement(),
                 document.querySelector('form').nextSibling);
           }
           input.value = '';
@@ -44,9 +46,6 @@
           return false;
         }
       });
-
-      var app = new BaseWidget(['app', 'preserve'], { id: 'app' });
-      app.render(document.body);
     </script>
   </body>
 </html>

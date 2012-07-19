@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+  </head>
+  <body>
+    <!-- TODO: need to address text nodes between divs so that this works.
+         <template>Test<use ...>End test</template> -->
+
+    <template name='foo'>
+      <div class='foo'>
+        <div>Foo {{text}}.</div>
+        <use mixins='button'>{ "text": "{{text}}" }</use>
+        <use mixins='button'>{ "text": "oh my {{text}}" }</use>
+      </div>
+    </template>
+
+    <template name='button'>
+      <button class='bar'>Should be 'hi': {{text}}</button>
+    </template>
+
+    <div>Shall we use foo?</div>
+    <use mixins='foo'>{ "text": "hi" }</use>
+
+    <script>
+//      BaseWidget.event('foo').listen({
+//        init: function() { alert('foo constructed'); } });
+//      BaseWidget.event('button').listen({
+//        init: function() { alert('button constructed'); } });
+    </script>
+  </body>
+</html>

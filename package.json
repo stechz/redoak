@@ -10,6 +10,7 @@
     "jsdom": "*",
     "mustache": "*",
     "uglify-js": "*",
+    "underscore": "*",
     "websocket": "*"
   },
   "keywords": ["framework", "html5", "web"],

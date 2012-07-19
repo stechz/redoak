@@ -3,38 +3,16 @@ var express = require('express');
 var events = require('events');
 var fs = require('fs');
 var path = require('path');
+var post = require('./lib/post');
 var websocket = require('websocket');
 
 // TODO: bug when basic dependency isn't found?
 // TODO: use mustache from node_modules dir?
+// TODO: bug: preserve is no longer working.
 
-function html(fileObjs) {
-  var root = fileObjs[fileObjs.length - 1];
-  if (!root || !root.document) {
-    return '';
-  }
-  var document = root.document;
-
-  var cssText = dependencies.renderCSS(
-      fileObjs, function(x) { return x.servername });
-  if (cssText) {
-    var css = document.createElement('style');
-    document.querySelector('head').appendChild(css);
-    css.textContent = cssText;
-  }
-
-  var script = document.createElement('script');
-  var before = document.querySelector('body > script');
-  document.body.insertBefore(script, before);
-  script.textContent = dependencies.renderJS(
-      fileObjs, function(x) { return x.servername; });
-
-  // XXX for some reason, document.innerHTML puts the doctype node after the
-  //     document element. HTML5 parsers expect this tag at the beginning.
-  //     Should fix this properly somehow.
-  return ('<!DOCTYPE html>' +
-          document.innerHTML.replace(/<!doctype html>/i, ''));
-}
+dependencies.on('error', function(err) {
+  console.error(err);
+});
 
 function middleware(begin, filename) {
   var str = '';
@@ -42,15 +20,15 @@ function middleware(begin, filename) {
   var emitter = new events.EventEmitter();
   dependencies.watch({ name: filename, type: 'oak' }, function(tree) {
     var nameCount = {};
-    fileObjs = dependencies.flatten(tree, {});
-    (function() {
-      console.log(JSON.stringify(fileObjs, function replace(name, value) {
-        if (name == 'document' || name == 'data') {
-          return undefined;
-        }
-        return value;
-      }, 2));
-    })();
+    fileObjs = post.flatten(tree, {});
+
+    // Useful for figuring out debugging the dependency tree.
+    var replace = function(n, v) {
+      return (n == 'document' || n == 'data') ? undefined : v;
+    };
+    emitter.once('debug', console.log);
+    emitter.emit('debug', JSON.stringify(fileObjs, replace, 2));
+
     for (var i = 0; i < fileObjs.length; i++) {
       var name = fileObjs[i].name;
       if (nameCount[name]) {
@@ -61,7 +39,7 @@ function middleware(begin, filename) {
         fileObjs[i].servername = fileObjs[i].name;
       }
     }
-    str = html(fileObjs);
+    str = post.html(fileObjs);
     emitter.emit('change');
   });
 
@@ -81,8 +59,6 @@ function middleware(begin, filename) {
     }
     emitter.on('change', onChange);
     connection.once('close', function() {
-      // TODO: is this being called?
-      console.log('close!');
       emitter.removeListener('change', onChange);
       connection = null;
     });
@@ -93,26 +69,34 @@ function middleware(begin, filename) {
       for (var i = 0; i < fileObjs.length; i++) {
         if (req.params[0] == fileObjs[i].servername) {
           res.write('' + fileObjs[i].data);
-          res.end();
-          return;
+          return res.end();
         }
       }
     } else {
       if (str) {
         res.write(str);
-        res.end();
-        return;
+        return res.end();
       }
     }
-    return next();
+    next();
   };
 }
+
+if (process.argv.length < 3) {
+  console.error('Must specify an oak file.');
+  process.exit(1);
+}
+
+var filename = process.argv[2];
+console.log('Serving up ' + filename + ' on /.');
+filename = path.resolve(filename);
 
 var app = express.createServer();
 app.configure(function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.bodyParser());
-  app.get('/*', middleware('/', 'public/example.html'));
+  app.use('/', express.static(path.dirname(filename)));
+  app.get('/*', middleware('/', filename));
 });
 
 app.listen(3000);
