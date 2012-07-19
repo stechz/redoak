@@ -3,7 +3,7 @@ var express = require('express');
 var events = require('events');
 var fs = require('fs');
 var path = require('path');
-var post = require('./lib/post');
+var render = require('./lib/render');
 var websocket = require('websocket');
 
 // TODO: bug when basic dependency isn't found?
@@ -19,27 +19,26 @@ function middleware(begin, filename) {
   var fileObjs = [];
   var emitter = new events.EventEmitter();
   dependencies.watch({ name: filename, type: 'oak' }, function(tree) {
-    var nameCount = {};
-    fileObjs = post.flatten(tree, {});
-
     // Useful for figuring out debugging the dependency tree.
-    var replace = function(n, v) {
-      return (n == 'document' || n == 'data') ? undefined : v;
-    };
-    emitter.once('debug', console.log);
-    emitter.emit('debug', JSON.stringify(fileObjs, replace, 2));
+    // var replace = function(n, v) {
+    //   return (n == 'document' || n == 'data') ? undefined : v;
+    // };
+    // emitter.once('debug', console.log);
+    // emitter.emit('debug', JSON.stringify(fileObjs, replace, 2));
 
-    for (var i = 0; i < fileObjs.length; i++) {
-      var name = fileObjs[i].name;
+    var nameCount = {};
+    fileObjs = render.flatten(tree);
+    fileObjs.forEach(function(fileObj) {
+      var name = fileObj.name;
       if (nameCount[name]) {
         ++nameCount[name];
-        fileObjs[i].servername = nameCount[name] + '/' + name;
+        fileObj.servername = nameCount[name] + '/' + name;
       } else {
         nameCount[name] = 1;
-        fileObjs[i].servername = fileObjs[i].name;
+        fileObj.servername = fileObj.name;
       }
-    }
-    str = post.html(fileObjs);
+    });
+    str = render.html(tree);
     emitter.emit('change');
   });
 
