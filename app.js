@@ -19,13 +19,6 @@ function middleware(begin, filename) {
   var fileObjs = [];
   var emitter = new events.EventEmitter();
   dependencies.watch({ name: filename, type: 'oak' }, function(tree) {
-    // Useful for figuring out debugging the dependency tree.
-    // var replace = function(n, v) {
-    //   return (n == 'document' || n == 'data') ? undefined : v;
-    // };
-    // emitter.once('debug', console.log);
-    // emitter.emit('debug', JSON.stringify(fileObjs, replace, 2));
-
     var nameCount = {};
     fileObjs = render.flatten(tree);
     fileObjs.forEach(function(fileObj) {
@@ -40,6 +33,13 @@ function middleware(begin, filename) {
     });
     str = render.html(tree);
     emitter.emit('change');
+
+    // Useful for figuring out debugging the dependency tree.
+    // var replace = function(n, v) {
+    //   return (n == 'document' || n == 'data') ? undefined : v;
+    // };
+    // emitter.once('debug', console.log);
+    // emitter.emit('debug', JSON.stringify(fileObjs, replace, 2));
   });
 
   var WebSocketServer = websocket.server;

@@ -3,11 +3,11 @@
   <head>
     <meta charset='UTF-8'/>
     <title>TODO app</title>
-    <link rel='stylesheet' href='example.css'></link>
   </head>
   <body>
     <template name='app'>
       <div class='app'>
+        <link rel='stylesheet' href='todo.css'></link>
         <h1>Todos</h1>
         <form oak-onsubmit='newTodo'>
           <input name='input' type='text'
@@ -50,7 +50,7 @@
       BaseWidget.event('todo').listen({
         rendered: function() {
           var parentEl = this.parent_.getElement();
-          var form = document.querySelector('form');
+          var form = parentEl.querySelector('form');
           parentEl.insertBefore(this.getElement(), form.nextSibling);
         }
       });
