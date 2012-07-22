@@ -94,8 +94,8 @@ var app = express.createServer();
 app.configure(function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.bodyParser());
-  app.use('/', express.static(path.dirname(filename)));
   app.get('/*', middleware('/', filename));
+  app.use('/', express.static(path.dirname(filename)));
 });
 
 app.listen(3000);
