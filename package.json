@@ -14,5 +14,6 @@
     "websocket": "*"
   },
   "keywords": ["framework", "html5", "web"],
-  "bin": { "redoak": "./bin/redoak" }
+  "bin": { "redoak": "./bin/redoak" },
+  "main": "./lib/redoak"
 }

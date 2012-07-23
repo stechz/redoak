@@ -1,22 +1,27 @@
-var dependencies = require('./lib/dependencies');
+#!/usr/bin/env node
+var redoak = require('redoak');
 var express = require('express');
-var middleware = require('./lib/middleware');
-var mongodb = require('mongodb');
 var path = require('path');
 
-var mongo = new mongodb.Db(
-    'crowdyoga', new mongodb.Server('127.0.0.1', 27017, {}));
-
-// Say something when errors happen.
-dependencies.on('error', function(tree, fileObj) {
-  console.error('Error for', fileObj.name + ':', fileObj.error);
+redoak.dependencies.on('error', function(err) {
+  console.error(err);
 });
+
+if (process.argv.length < 3) {
+  console.error('Must specify an oak file.');
+  process.exit(1);
+}
+
+var filename = process.argv[2];
+console.log('Serving up ' + filename + ' on / on 3000.');
+filename = path.resolve(filename);
 
 var app = express.createServer();
 app.configure(function() {
-  var main = { name: 'main.js', type: 'js' };
-  app.use('/js', redoak.middleware(['public']));
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.bodyParser());
-  redoak.rapid(app, '/rapid/');
+  app.get('/*', redoak.middleware(app, '/', filename));
+  app.use('/', express.static(path.dirname(filename)));
 });
+
+app.listen(3000);
