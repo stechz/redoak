@@ -1,26 +1,23 @@
-body {
+div.app {
   font-family: Helvetica;
   font-size: 16px;
-  background-color: #f0f0f0;
-}
-
-div.app {
   padding: 20px;
-  background-color: white;
+  background-color: #eaeaea;
+  background-image: linear-gradient(top, #fafafa, #cacaca 50%);
   margin: auto;
   width: 500px;
   text-align: center;
 }
 
-h1 {
+div.app h1 {
   text-align: center;
 }
 
-div.todo.done label {
+div.app div.todo.done label {
   text-decoration: line-through;
 }
 
-input[type=text] {
+div.app input[type=text] {
   margin: auto;
   width: 420px;
   font-size: 16px;
@@ -28,20 +25,20 @@ input[type=text] {
   margin-bottom: 18px;
 }
 
-div.todo {
+div.app div.todo {
   text-align: left;
   -moz-user-select: none;
 }
 
-label {
+div.app label {
   font-size: 16px;
   line-height: 1.8;
 }
 
-div.actions {
+div.app div.actions {
   text-align: right;
 }
 
-button {
+div.app button {
   margin: 5px 10px 0 0;
 }

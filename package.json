@@ -9,6 +9,7 @@
     "html5": "*",
     "jsdom": "*",
     "mustache": "*",
+    "Sheet": "*",
     "uglify-js": "*",
     "underscore": "*",
     "websocket": "*"
