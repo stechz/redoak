@@ -1,6 +1,6 @@
 {
   "name": "redoak",
-  "description": "Rapid HTML5 development kit",
+  "description": "Rapid HTML5 development tool",
   "version": "0.1.0",
   "author": "Benjamin Stover <benjamin.stover@gmail.com>",
   "contributors": [ ],
@@ -15,5 +15,6 @@
   },
   "keywords": ["framework", "html5", "web"],
   "bin": { "redoak": "./bin/redoak" },
-  "main": "./lib/redoak"
+  "main": "./lib/redoak",
+  "license": "MIT"
 }
