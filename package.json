@@ -5,7 +5,7 @@
   "author": "Benjamin Stover <benjamin.stover@gmail.com>",
   "contributors": [ ],
   "dependencies": {
-    "express": "*",
+    "express": "=2.5.11",
     "html5": "*",
     "jsdom": "*",
     "mustache": "*",

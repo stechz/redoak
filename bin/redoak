@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-var redoak = require('redoak');
 var express = require('express');
 var path = require('path');
+var redoak = require('../lib/redoak');
 
 redoak.dependencies.on('error', function(err) {
   console.error(err);
@@ -20,8 +20,9 @@ var app = express.createServer();
 app.configure(function() {
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
   app.use(express.bodyParser());
-  app.get('/*', redoak.middleware(app, '/', filename));
+  app.get('/', redoak.middleware(app, '/', filename));
   app.use('/', express.static(path.dirname(filename)));
+  app.use('/', express.static(redoak.public()));
 });
 
 app.listen(3000);
