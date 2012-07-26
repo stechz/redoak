@@ -6,6 +6,7 @@
   </head>
   <body>
     <template name='todo:app'>
+      <link rel='stylesheet' href='css/font-awesome.css'></link>
       <link rel='stylesheet' href='todo.css'></link>
       <link rel='js' href='todo.js'></link>
       <div class='app'>
@@ -15,12 +16,13 @@
                  placeholder='What needs to be done?' autocomplete='off'>
           </input>
         </form>
-        <use mixins='todo'>{ "id": 1, "text": "remember the milk"}</use>
+        <use mixins='todo'>{ "id": 1, "text": "remember the milk" }</use>
       </div>
     </template>
 
     <template name='todo'>
       <div class='todo'>
+        <a oak-onclick='deleteTodo'><i class='icon-trash'></i></a>
         <input id='todo-item-{{id}}' type='checkbox' autocomplete='off'></input>
         <label for='todo-item-{{id}}'>{{text}}</label>
       </div>

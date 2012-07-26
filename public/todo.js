@@ -21,6 +21,9 @@ BaseWidget.event('todo:app').listen({
 });
 
 BaseWidget.event('todo').listen({
+  deleteTodo: function(e) {
+    his.dispose();
+  },
   rendered: function() {
     var parentEl = this.parent_.getElement();
     var form = parentEl.querySelector('form');
