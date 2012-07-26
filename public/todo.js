@@ -1,5 +1,4 @@
 // Logic for todo app.
-// By Benjamin Stover
 
 BaseWidget.event('todo:app').listen({
   newTodo: function(e) {
@@ -12,21 +11,37 @@ BaseWidget.event('todo:app').listen({
         id: this.children_.length + 1
       };
       this.addChild(widget);
-      widget.render(this.getElement(), null, view);
+      widget.render(this.el(), null, view);
     }
     input.value = '';
     e.preventDefault();
     return false;
+  },
+
+  deleteTodos: function(e) {
+    var children = this.children();
+    for (var i = 0; i < children.length; i++) {
+      var checkbox = children[i].el().querySelector('input');
+      if (checkbox.checked) {
+        children[i].dispose();
+      }
+    }
   }
 });
 
 BaseWidget.event('todo').listen({
-  deleteTodo: function(e) {
-    his.dispose();
-  },
   rendered: function() {
-    var parentEl = this.parent_.getElement();
+    var parentEl = this.parent_.el();
     var form = parentEl.querySelector('form');
-    parentEl.insertBefore(this.getElement(), form.nextSibling);
+    parentEl.insertBefore(this.el(), form.nextSibling);
+  },
+
+  click: function() {
+    var checkbox = this.el().querySelector('input');
+    if (checkbox.checked) {
+      this.el().className = 'todo done';
+    } else {
+      this.el().className = 'todo';
+    }
   }
 });

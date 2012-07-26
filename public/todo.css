@@ -16,7 +16,8 @@ h1 {
   text-align: center;
 }
 
-input[type=checkbox] {
+div.todo.done label {
+  text-decoration: line-through;
 }
 
 input[type=text] {
@@ -37,3 +38,10 @@ label {
   line-height: 1.8;
 }
 
+div.actions {
+  text-align: right;
+}
+
+button {
+  margin: 5px 10px 0 0;
+}
