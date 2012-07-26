@@ -21,7 +21,7 @@ Anti-goals:
 - Live updating of client code on your production server. The websocket
   connection is for development purposes only.
 
-This project is brang new and is still evolving rapidly. Please give it a try
+This project is brand new and is still evolving rapidly. Please give it a try
 and file lots of bugs! Patches are appreciated as well.
 
 # Diving in
@@ -37,10 +37,21 @@ webserver.
 
 # Understanding the code
 
+### Server side code
+
 Check out `lib/dependencies.js`. It's responsible for parsing the HTML, picking
 out any CSS links or script tags, and watching them all for any changes. The
 other important file is `lib/render.js`. It processes the tree, and generates
 widget code and the final HTML.
+
+### Client side code
+
+All in `lib/public/`. The important file is really `basewidget.js`, which
+contains the BaseWidget prototype for widget objects that are created for <use>
+tags. You can also create them in the client side. See `todo.html` for an
+example.
+
+`lib/public/util.js` contains the code for events.
 
 # Testing
 
@@ -68,3 +79,9 @@ src starts with a `/` like:
 
 Then redoak will ignore it. There should probably be a way to render widgets
 from your DB on the server, eventually.
+
+# Contributors to redoak
+
+- Emma Zhou: typo in README.
+- Itai Zuckerman: todo example delete functionality. Bugfix for preserve mixin
+  and disposing widgets. Bugfix for event listeners.
