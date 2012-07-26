@@ -21,7 +21,7 @@ BaseWidget.event('todo:app').listen({
   deleteTodos: function(e) {
     var children = this.children();
     for (var i = 0; i < children.length; i++) {
-      var checkbox = children[i].el().querySelector('input');
+      var checkbox = children[i].el('checkbox');
       if (checkbox.checked) {
         children[i].dispose();
       }
@@ -31,13 +31,12 @@ BaseWidget.event('todo:app').listen({
 
 BaseWidget.event('todo').listen({
   rendered: function() {
-    var parentEl = this.parent_.el();
-    var form = parentEl.querySelector('form');
-    parentEl.insertBefore(this.el(), form.nextSibling);
+    var form = this.parent_.el('form');
+    form.parentNode.insertBefore(this.el(), form.nextSibling);
   },
 
   click: function() {
-    var checkbox = this.el().querySelector('input');
+    var checkbox = this.el('checkbox');
     if (checkbox.checked) {
       this.el().className = 'todo done';
     } else {

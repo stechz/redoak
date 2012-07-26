@@ -10,7 +10,7 @@
       <link rel='js' href='todo.js'></link>
       <div class='app'>
         <h1>Todos</h1>
-        <form oak-onsubmit='newTodo'>
+        <form oak-onsubmit='newTodo' oak-name='form'>
           <input name='input' type='text'
                  placeholder='What needs to be done?' autocomplete='off'>
           </input>
@@ -25,7 +25,7 @@
     <template name='todo'>
       <div class='todo'>
         <input id='todo-item-{{id}}' type='checkbox' autocomplete='off'
-               oak-onclick='click'>
+               oak-onclick='click' oak-name='checkbox'>
         </input>
         <label for='todo-item-{{id}}'>{{text}}</label>
       </div>
