@@ -1,16 +1,18 @@
 # Overview
 
 Thanks for checking out redoak! The aim of this project is to allow rapid
-prototyping of HTML without getting in the way of your usual toolchain.  There
+prototyping of HTML without getting in the way of your usual workflow.  There
 are no manifestos or revolutions, just faster development.
 
-This tool currently provides:
+This tool provides for everyone:
 - A server that serves up HTML that refreshes itself when it or any of its
   dependencies change.
-- A method of creating widgets, which are basically HTML snippets and coupling
-  it with some script logic  The widgets can be rendered server side or client
-  side.
-- A mixin system that allows widgets to take on multiple features.
+- Ability to make reusable components that are easy to write and change.
+- A mixin system that allows components to take on multiple features.
+
+For developers:
+- A client side API for constructing and customizing components.
+- A flexible and tiny event system.
 - A straightforward way to split up components and test them with mock data.
 
 Anti-goals:
@@ -26,6 +28,8 @@ and file lots of bugs! Patches are appreciated as well.
 
 # Diving in
 
+You will need node and npm to get started.
+
 The best way to get the gist of it is to try it. After you install redoak, just
 run:
 
@@ -34,6 +38,16 @@ run:
 Navigate to http://localhost:3000/, fire up your favorite editor and start
 playing. :) You can add files to public/, and they should be visible to the
 webserver.
+
+# Scripting and redoak
+
+__You don't need to know Javascript in order to use redoak__. You can use it to
+write HTML and CSS, and it provides you a way to do it without copy and pasting
+your HTML for components such as complex list items.
+
+It's also possible to use redoak for developing serious web applications (please
+see the section below), and should play nice with all sorts of technologies,
+both client side and server side. Read on to learn about its client-side API.
 
 ## BaseWidget
 
