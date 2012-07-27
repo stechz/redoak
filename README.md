@@ -5,9 +5,9 @@ prototyping of HTML without getting in the way of your usual workflow.  There
 are no manifestos or revolutions, just faster development.
 
 This tool provides for everyone:
-- A server that serves up HTML that refreshes itself when it or any of its
-  dependencies change.
-- Ability to make reusable components that are easy to write and change.
+- A server that serves up your HTML, and refreshes the page when the HTML or
+  any of its dependencies change.
+- Ability to make reusable components that are lightweight and easy to write.
 - A mixin system that allows components to take on multiple features.
 
 For developers:
@@ -36,7 +36,7 @@ run:
     bin/redoak public/todo.html
 
 Navigate to http://localhost:3000/, fire up your favorite editor and start
-playing. :) You can add files to public/, and they should be visible to the
+playing. :) You can add files to `public/`, and they should be visible to the
 webserver.
 
 # Scripting and redoak
