@@ -1,7 +1,7 @@
 {
   "name": "redoak",
   "description": "Rapid HTML5 development tool",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "Benjamin Stover <benjamin.stover@gmail.com>",
   "contributors": [ ],
   "dependencies": {
