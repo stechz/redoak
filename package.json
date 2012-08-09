@@ -8,7 +8,6 @@
     "express": "=2.5.11",
     "html5": "*",
     "jsdom": "*",
-    "mustache": "*",
     "Sheet": "*",
     "uglify-js": "*",
     "underscore": "*",
