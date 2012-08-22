@@ -1,0 +1,13 @@
+<template name='loop'>
+  <table>
+    <tbody>
+      {{#arr}}
+      <tr>
+        <td>{{.}}</td>
+      </tr>
+      {{/arr}}
+    </tbody>
+  </table>
+</template>
+
+<use mx='loop'>{ "arr": [1, 2, 3] }</use>
