@@ -11,7 +11,7 @@ This tool provides for everyone:
 - A mixin system that allows components to take on multiple features.
 
 For developers:
-- A client side API for constructing and customizing components.
+- A tiny client side API for constructing and customizing components.
 - A flexible and tiny event system.
 - A straightforward way to split up components and test them with mock data.
 
@@ -20,7 +20,7 @@ Anti-goals:
   jQuery, backbone, underscore.js, whatever with redoak! It should be possible
   to use this with non-node projects: django, tornado, rails, and so forth.
 - No database model middleware.
-- Live updating of client code on your production server. The websocket
+- Live updating of client code on your development server. The websocket
   connection is for development purposes only.
 
 This project is brand new and is still evolving rapidly. Please give it a try
@@ -45,9 +45,10 @@ __You don't need to know Javascript in order to use redoak__. You can use it to
 write HTML and CSS, and it provides you a way to do it without copy and pasting
 your HTML for components such as complex list items.
 
-It's also possible to use redoak for developing serious web applications (please
-see the section below), and should play nice with all sorts of technologies,
-both client side and server side. Read on to learn about its client-side API.
+It's also possible to use redoak for developing serious web applications
+(please see the section below), and should play nice with all sorts of
+technologies, both client side and server side. Read on to learn about its
+client-side API.
 
 ## BaseWidget
 
@@ -121,17 +122,23 @@ contains the BaseWidget prototype.
 
 # Testing
 
-There's one test. :) Try it:
+Reftests check output of oak files (`*.oak.html`) with expected HTML output
+(`*.html`). To run:
 
     node lib/reftest/reftest.js
 
 It diffs the output of a sample oak file with the expected HTML. If nothing is
 outputted, congratulations, it passed!
 
+Dependencies also has some unit tests, since it's the most complicated bit of
+code. Try:
+
+    node lib/dependencies.js
+
 # Using it in your web app
 
 Unless you want to contribute, I wouldn't recommend using it in anything
-serious. Little thought has been given to browser compatibility or how to
+serious yet. Little thought has been given to browser compatibility or how to
 incorporate it into a larger scope project. Optimization should be pretty
 straightforward, but that work hasn't been done yet.
 
@@ -145,6 +152,9 @@ src starts with a `/` like:
 
 Then redoak will ignore it. There should probably be a way to render widgets
 from your DB on the server, eventually.
+
+If you use node, see `bin/redoak` for how to use it in your module. If you
+don't, there's some work that still needs to be done. :)
 
 # Contributors to redoak
 
