@@ -1,13 +1,22 @@
 <template name='loop'>
-  <table>
-    <tbody>
-      {{#arr}}
-      <tr>
-        <td>{{.}}</td>
-      </tr>
-      {{/arr}}
-    </tbody>
-  </table>
+  <div>
+    {{#has_entries}}
+    <table>
+      <tbody>
+        {{#arr}}
+        <tr>
+          <td>{{.}}</td>
+        </tr>
+        {{/arr}}
+      </tbody>
+    </table>
+    {{/has_entries}}
+
+    {{^has_entries}}
+    No entries.
+    {{/has_entries}}
+  </div>
 </template>
 
-<use mx='loop'>{ "arr": [1, 2, 3] }</use>
+<use mx='loop' has_entries>{ "arr": [1, 2, 3] }</use>
+<use mx='loop'>{ "arr": [] }</use>
