@@ -50,24 +50,24 @@ It's also possible to use redoak for developing serious web applications
 technologies, both client side and server side. Read on to learn about its
 client-side API.
 
-## BaseWidget
+## Widget
 
-As you'll see in `todo.html`, BaseWidgets are responsible for managing the
+As you'll see in `todo.html`, Widgets are responsible for managing the
 html inside template tags once it is injected into the DOM. HTML injected
 server side has auto-generated javascript constructs these widgets. HTML
 created on the client side can be done like so:
 
-    var widget = new BaseWidget(['mytemplatename']);
+    var widget = new Widget(['mytemplatename']);
     widget.render(document.body, null, { data: 'data for template' });
 
-BaseWidgets are hierarchical and may contain other BaseWidgets, so that you can
-easily create and dispose groups of widgets with a single call.
+Widgets are hierarchical and may contain other Widgets, so that you can easily
+create and dispose groups of widgets with a single call.
 
-### Methods of BaseWidget
+### Methods of Widget
 
 See `lib/public/basewidget.js` for now.
 
-### Lifecycle of BaseWidget
+### Lifecycle of Widget
 
 - Construction. At this point, it has no children and has no HTML it is
   responsible for.
@@ -87,7 +87,7 @@ template rendering and listening for events.
 
 ### The standard events of a widget
 
-- `init(mixins)`: BaseWidget has just been constructed.
+- `init(mixins)`: Widget has just been constructed.
 - `addChild(childWidget)`: child has been added. May happen before or happen
   widget has been rendered.
 - `html()`: Called when `render()` is called to get the HTML for this type of
@@ -116,7 +116,7 @@ widget code and the final HTML.
 ### Client side code
 
 All in `lib/public/`. The important file is really `basewidget.js`, which
-contains the BaseWidget prototype.
+contains the Widget prototype.
 
 `lib/public/util.js` contains the code for events.
 
