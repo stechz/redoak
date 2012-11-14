@@ -5,8 +5,9 @@
   </head>
   <body>
     <template name='foo'>
+      <link rel='js' href='widget.js'>
       <div class='foo'>
-        <div>Foo {{text}}.</div>
+        <div oak-name='mydiv'>Foo {{text}}.</div>
         <use mixins='button'>{ "text": "{{text}}" }</use>
         <use mixins='button'>{ "text": "oh my {{text}}" }</use>
       </div>

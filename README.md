@@ -135,6 +135,11 @@ code. Try:
 
     node lib/dependencies.js
 
+Finally, there's now some basic sanity tests for the automatically generated
+Javascript. To run:
+
+    node lib/test-generated-js.js
+
 # Using it in your web app
 
 Unless you want to contribute, I wouldn't recommend using it in anything
@@ -161,3 +166,11 @@ don't, there's some work that still needs to be done. :)
 - Emma Zhou: typo in README.
 - Itai Zuckerman: todo example delete functionality. Bugfix for preserve mixin
   and disposing widgets. Bugfix for event listeners.
+
+# Future design considerations
+
+* Code sharing via `emit()`. Callling `emit(fname)()` has an awkward feel, but
+  it has some advantages: possible lazy optimization, and lets unimplemented
+  methods be a noop instead of an error. Neither of these seem particularly
+  important, and JS programmers will be more familiar with a typical call
+  structure (isn't it already weird enough? :)).

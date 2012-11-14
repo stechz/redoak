@@ -1,13 +1,13 @@
 {
   "name": "redoak",
   "description": "Rapid HTML5 development tool",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "Benjamin Stover <benjamin.stover@gmail.com>",
   "contributors": [ ],
   "dependencies": {
     "express": ">=3.0.0rc3",
-    "html5": "*",
-    "jsdom": "*",
+    "html5": "0.3.8",
+    "jsdom": "0.2.15",
     "Sheet": "*",
     "uglify-js": "*",
     "underscore": "*",
