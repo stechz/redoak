@@ -138,7 +138,7 @@ code. Try:
 Finally, there's now some basic sanity tests for the automatically generated
 Javascript. To run:
 
-    node lib/test-generated-js.js
+    node lib/gentest/gentest.js
 
 # Using it in your web app
 

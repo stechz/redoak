@@ -5,12 +5,22 @@
   </head>
   <body>
     <template name='foo'>
+      <link rel='js' href='widget.js'>
+      <link rel='js' href='#foo.js'>
       <div class='foo'>
         <div oak-name='mydiv'>Foo {{text}}.</div>
         <use mixins='button'>{ "text": "{{text}}" }</use>
         <use mixins='button'>{ "text": "oh my {{text}}" }</use>
       </div>
     </template>
+
+    <script id='foo.js'>
+      Widget.event('foo').listen({
+        run: function() {
+          return 'foo is fooing';
+        }
+      });
+    </script>
 
     <template name='button'>
       <button class='bar'>I am a button: {{text}}</button>
