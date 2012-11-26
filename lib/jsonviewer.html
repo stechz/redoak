@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <style>
+      div.branch {
+        padding-left: 20px;
+        font-family: monospace;
+        color: #aaa;
+        line-height: 1.1;
+      }
+
+      div.branch div.key {
+        min-width: 60px;
+        color: #44b;
+      }
+
+      div.branch.simple div.key {
+        width: inherit;
+      }
+
+      div.branch.simple * {
+        display: inline-block;
+        width: inherit;
+        padding-left: 0;
+      }
+
+      div.branch:after {
+        content: ',';
+        margin-right: 10px;
+      }
+
+      div.branch:last-child:after {
+        content: '';
+        margin-right: 0;
+      }
+
+      div.branch div.key:before {
+        content: '"';
+      }
+
+      div.branch div.key:after {
+        content: '":';
+        padding-right: 10px;
+      }
+
+      div.branch div.value {
+        color: #333;
+      }
+
+      div.branch.more div.value {
+        cursor: pointer;
+      }
+
+      div.branch span.more {
+        font-family: sans-serif;
+        font-size: 10px;
+        color: #888;
+        margin: 2px 2px 2px 6px;
+        padding: 2px 5px 1px 5px;
+        background-color: #aaa;
+        color: white;
+        border-radius: 2px;
+      }
+
+      div.branch div.value.string:before {
+        content: '"';
+        color: #4b4;
+      }
+
+      div.branch div.value.string:after {
+        content: '"';
+        color: #4b4;
+      }
+
+      div.branch div.key, div.branch div.value {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <template name='json'>
+      <link rel='js' href='widget.js'>
+      <link rel='js' href='jsonviewer.js'>
+      <div class='json'></div>
+    </template>
+
+    <use mx='json'>
+      {
+        "name": "root",
+        "concat": [
+          { "data": "&lt;html lang..." },
+          { "name": "unbound", "var": "pagename" },
+          { "data": "&lt;/title&gt;..." },
+          {
+            "name": "base",
+            "concat": [
+              { "data": "&lt;div class=\"title\"&gt;..." },
+              { "name": "unbound", "var": "pagename" },
+              { "data": "&lt;/div&gt;..." }
+            ]
+          },
+          { "data": "&lt;/body&gt;&lt;/html&gt;" }
+        ]
+      }
+    </use>
+
+    <script src='session.js' oak-no></script>
+  </body>
+</html>
