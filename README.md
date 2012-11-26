@@ -122,6 +122,11 @@ contains the Widget prototype.
 
 # Testing
 
+A few library files have unit tests:
+
+    node lib/fileobj.js
+    node lib/dependencies.js
+
 Reftests check output of oak files (`*.oak.html`) with expected HTML output
 (`*.html`). To run:
 
@@ -129,11 +134,6 @@ Reftests check output of oak files (`*.oak.html`) with expected HTML output
 
 It diffs the output of a sample oak file with the expected HTML. If nothing is
 outputted, congratulations, it passed!
-
-Dependencies also has some unit tests, since it's the most complicated bit of
-code. Try:
-
-    node lib/dependencies.js
 
 Finally, there's now some basic sanity tests for the automatically generated
 Javascript. To run:
