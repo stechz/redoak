@@ -48,7 +48,13 @@ root
   ;
 
 statements
-  : statement { $$ = [$1]; }
+  : statement {
+    if ($$ === null) {
+      $$ = [];
+    } else {
+      $$ = [$1];
+    }
+  }
   | statements statement {
     if ($2 === null) {
     } else if (tagStack.length) {
@@ -110,6 +116,7 @@ mustache
 pathSegments
   : pathSegments SEP pathSegment { $$ = $1 + $3; }
   | pathSegment
+  | SEP
   ;
 
 pathSegment

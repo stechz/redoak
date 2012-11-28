@@ -65,7 +65,7 @@ create and dispose groups of widgets with a single call.
 
 ### Methods of Widget
 
-See `lib/public/basewidget.js` for now.
+See `lib/public/widget.js` for now.
 
 ### Lifecycle of Widget
 
@@ -115,7 +115,7 @@ widget code and the final HTML.
 
 ### Client side code
 
-All in `lib/public/`. The important file is really `basewidget.js`, which
+All in `lib/public/`. The important file is really `widget.js`, which
 contains the Widget prototype.
 
 `lib/public/util.js` contains the code for events.
@@ -124,6 +124,7 @@ contains the Widget prototype.
 
 A few library files have unit tests:
 
+    node lib/oakstache/handler.js
     node lib/fileobj.js
     node lib/dependencies.js
 
