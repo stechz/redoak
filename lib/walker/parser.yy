@@ -66,10 +66,13 @@ selector
 selector_unit
   : ID { $$ = { type: 'simple', id: $1 }; }
   | ID ATTR_BEGIN ID EQ ID ATTR_END {
-    $$ = { type: 'attr', id: $1, lhs: $3, rhs: $5  };
+    $$ = { type: 'eqattr', id: $1, lhs: $3, rhs: $5  };
   }
   | ID ATTR_BEGIN ID EQ ATTR_END {
-    $$ = { type: 'attr', id: $1, lhs: $3, rhs: ''  };
+    $$ = { type: 'eqattr', id: $1, lhs: $3, rhs: ''  };
+  }
+  | ID ATTR_BEGIN ID ATTR_END {
+    $$ = { type: 'hasattr', id: $1, attr: $3 };
   }
   ;
 
