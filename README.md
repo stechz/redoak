@@ -125,6 +125,7 @@ contains the Widget prototype.
 A few library files have unit tests:
 
     node lib/oakstache/handler.js
+    node lib/walker/handler.js
     node lib/fileobj.js
     node lib/dependencies.js
 
