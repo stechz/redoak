@@ -3,6 +3,16 @@
   <head>
     <meta charset='utf-8'>
     <style>
+      div.tabs {
+        margin-bottom: 15px;
+      }
+
+      div.tabs div.content {
+        height: 500px;
+        overflow: auto;
+        padding: 5px;
+      }
+
       div.result {
         font-family: monospace;
         white-space: pre;
@@ -10,24 +20,31 @@
 
       table {
         width: 100%;
+        height: 100%;
         padding: 5px;
         overflow: hidden;
+        border: 0;
+        border-collapse: collapse;
       }
 
       table th {
         text-align: left;
       }
 
-      table tr.body td {
-        height: 300px;
-      }
-
-      table tr.body.json td {
-        height: 150px;
-      }
-
-      table td:first-child {
+      table td {
         width: 50%;
+        height: 100%;
+      }
+
+      table tr {
+        padding: 0;
+        margin: 0;
+      }
+
+      table td:last-child, table th:last-child {
+        border-left: 5px solid #eee;
+        margin: 0;
+        padding: 0 20px;
       }
 
       table td {
@@ -38,10 +55,6 @@
       @media (max-height: 690px) {
         table tr.body td {
           height: 200px;
-        }
-
-        table tr.body.json td {
-          height: 50px;
         }
       }
 
@@ -83,9 +96,11 @@
         margin-bottom: 20px;
       }
     </style>
+
   </head>
   <body>
     <link rel='oak' href='jsonviewer.html'>
+    <link rel='oak' href='tabs.html'>
 
     <template name='edit'>
       <link rel='js' href='#edit.js'>
@@ -141,24 +156,31 @@
       <div class='result'>t</div>
     </template>
 
-    <table>
-      <tr><th>Walker program</th><th>Representation</th></tr>
-      <tr class='body'>
-        <td>
-          <use mx='edit preserve' id='walkeredit' recv='walkerrep'
-               help='Walker program'></use>
-        </td>
-        <td><use mx='walker walkerrep'></use></td>
-      </tr>
-      <tr><th>JSON to format</th><th>Representation</th></tr>
-      <tr class='body json'>
-        <td>
-          <use mx='edit preserve' id='jsonedit' recv='jsonrep'
-               help='JSON object'></use>
-        </td>
-        <td><use mx='json jsonrep'></use></td>
-      </tr>
-    </table>
+    <use mx='tabs'>{ "titles": ["Program", "JSON"] }</use>
+
+    <div style='display: none'>
+      <table>
+        <tr><th>Walker program</th><th>Representation</th></tr>
+        <tr class='body'>
+          <td>
+            <use mx='edit preserve' id='walkeredit' recv='walkerrep'
+                 help='Walker program'></use>
+          </td>
+          <td><use mx='walker walkerrep'></use></td>
+        </tr>
+      </table>
+
+      <table>
+        <tr><th>JSON to format</th><th>Representation</th></tr>
+        <tr class='body json'>
+          <td>
+            <use mx='edit preserve' id='jsonedit' recv='jsonrep'
+                 help='JSON object'></use>
+          </td>
+          <td><use mx='json jsonrep'></use></td>
+        </tr>
+      </table>
+    </div>
 
     <div style='padding-left: 8px;'>
       <div style='font-weight: 700; font-size: 16px; margin-bottom: 8px'>
@@ -168,6 +190,41 @@
     </div>
 
     <script>
+      Widget.event('tabs').listen({
+        init: function() {
+          this.register();
+        },
+
+        nextTab: function() {
+          this.emit('activate')((this.active_ + 1) % this.titles_.length);
+        },
+
+        getActiveContent: function() {
+          return this.el('content').childNodes[this.active_];
+        },
+
+        rendered: function() {
+          var tables = document.querySelectorAll('body > div > table');
+          var self = this;
+          setTimeout(function() {
+            self.el('content').appendChild(tables[0]);
+            self.el('content').appendChild(tables[1]);
+            self.emit('activate')(0);
+          }, 0);
+        }
+      });
+
+      Widget.event('edit').listen({
+        keydown: function(ev) {
+          if (String.fromCharCode(ev.keyCode) == '\t') {
+            ev.preventDefault();
+            Widget.broadcast(['tabs'], 'nextTab')();
+            var tab = Widget.broadcast(['tabs'], 'getActiveContent')();
+            tab.querySelector('textarea').focus();
+          }
+        }
+      });
+
       Widget.event('jsonrep').listen({
         rendered: function() {
           this.register();
