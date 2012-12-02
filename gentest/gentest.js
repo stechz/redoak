@@ -2,11 +2,11 @@
 
 var _ = require('underscore');
 var assert = require('assert');
-var dependencies = require('../dependencies');
-var fileobj = require('../fileobj');
+var dependencies = require('../lib/dependencies');
+var fileobj = require('../lib/fileobj');
 var fs = require('fs');
 var path = require('path');
-var render = require('../render');
+var render = require('../lib/render');
 
 var document;
 
@@ -35,11 +35,11 @@ function testBasic() {
 
 document = fileobj.parseHTML('').ownerDocument;
 
-var utilJsName = path.resolve(__dirname, '../public/util.js');
+var utilJsName = path.resolve(__dirname, '../lib/public/util.js');
 var utiljs = fs.readFileSync(utilJsName, 'utf-8');
 eval(utiljs);
 
-var widgetJsName = path.resolve(__dirname, '../public/widget.js');
+var widgetJsName = path.resolve(__dirname, '../lib/public/widget.js');
 var widgetjs = fs.readFileSync(widgetJsName, 'utf-8');
 eval(widgetjs);
 

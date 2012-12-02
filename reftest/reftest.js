@@ -1,9 +1,9 @@
 var _ = require('underscore');
-var dependencies = require('../dependencies');
-var fileobj = require('../fileobj');
+var dependencies = require('../lib/dependencies');
+var fileobj = require('../lib/fileobj');
 var fs = require('fs');
 var path = require('path');
-var render = require('../render');
+var render = require('../lib/render');
 
 /** Tidy by damned, we'll do it our own way. */
 function pretty(element) {

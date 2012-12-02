@@ -2,7 +2,7 @@
 <html lang='en'>
   <head>
     <meta charset='utf-8'>
-    <style>
+    <style id='json.css'>
       div.branch {
         padding-left: 20px;
         font-family: monospace;
@@ -82,27 +82,12 @@
     <template name='json'>
       <link rel='js' href='widget.js'>
       <link rel='js' href='jsonviewer.js'>
+      <link rel='stylesheet' href='#json.css'>
       <div class='json'></div>
     </template>
 
     <use mx='json'>
-      {
-        "name": "root",
-        "concat": [
-          { "data": "&lt;html lang..." },
-          { "name": "unbound", "var": "pagename" },
-          { "data": "&lt;/title&gt;..." },
-          {
-            "name": "base",
-            "concat": [
-              { "data": "&lt;div class=\"title\"&gt;..." },
-              { "name": "unbound", "var": "pagename" },
-              { "data": "&lt;/div&gt;..." }
-            ]
-          },
-          { "data": "&lt;/body&gt;&lt;/html&gt;" }
-        ]
-      }
+      { "name": "123", }
     </use>
 
     <script src='session.js' oak-no></script>

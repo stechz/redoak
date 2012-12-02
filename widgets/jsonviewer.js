@@ -59,6 +59,15 @@ widget.json = {
   }
 };
 
+Widget.event.listen({
+  disposeChildren: function() {
+    var children = this.children();
+    for (var i = 0; i < children.length; i++) {
+      children[i].dispose();
+    }
+  }
+});
+
 Widget.event('jsonchild').listen({
   find: function(el) {
     while (el && el.className.indexOf('branch') == -1) {
@@ -148,6 +157,12 @@ Widget.event('jsonchild').listen({
 
 Widget.event('json').listen({
   rendered: function(obj) {
+    this.el().addEventListener('click', this.emit('click'), false);
+  },
+
+  model: function(obj) {
+    this.emit('disposeChildren')();
+
     if (window.session) {
       obj = window.session;
     }
@@ -155,8 +170,6 @@ Widget.event('json').listen({
     var widget = new Widget(['jsonchild']);
     widget.render(this.el(), null, { key: null, value: obj });
     this.addChild(widget);
-
-    this.el().addEventListener('click', this.emit('click'), false);
   },
 
   click: function(ev) {

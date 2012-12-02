@@ -33,19 +33,27 @@
 %start root
 
 %{
-var whitespace;
-var result;
-exports.mparse = function(str) {
-  exports.parse(str);
-  return result;
-};
+var walkerParse = (function(parser) {
+  return function(str) {
+    parser.parse(str);
+    return walkerParse.result;
+  };
+})(parser);
+
+if (typeof exports == 'object') {
+  exports.mparse = walkerParse;
+}
+
+if (typeof window == 'object') {
+  window.walkerParse = walkerParse;
+}
 %}
 
 %%
 
 root
   : statements EOF {
-    result = $$;
+    walkerParse.result = $$;
   }
   ;
 
@@ -79,8 +87,8 @@ selector_part
   ;
 
 selector_prop
-  : ID { [$1] }
-  | selector_prop SEP_DOT ID { $1.concat([$2]); }
+  : ID { $$ = [$1] }
+  | selector_prop SEP_DOT ID { $$ = $1.concat([$2]); }
   ;
 
 selector_unit
@@ -101,11 +109,11 @@ selector_obj_unit
   ;
 
 declaration
-  : WHITESPACE CONTENT { whitespace = $1.length - 1; $$ = $2; }
+  : WHITESPACE CONTENT { walkerParse.whitespace = $1.length - 1; $$ = $2; }
   | declaration WHITESPACE CONTENT {
-    if ($2.length - 1 < whitespace) {
+    if ($2.length - 1 < walkerParse.whitespace) {
       throw new Error('Not enough whitespace');
     }
-    $$ = $1 + '\n' + $2.substr(1, $2.length - whitespace - 1) + $3;
+    $$ = $1 + '\n' + $2.substr(1, $2.length - walkerParse.whitespace - 1) + $3;
   }
   ;

@@ -42,7 +42,7 @@ if (useStd >= 0) {
 
     app.get('/', middleware.get(filename));
 
-    var debug = path.resolve(__dirname, '../lib/jsonviewer.html');
+    var debug = path.resolve(__dirname, '../widgets/jsonviewer.html');
     app.get('/debug/', function(req, res) {
       var respond = function() {
         res.end(middleware.html(debug));
@@ -58,6 +58,13 @@ if (useStd >= 0) {
     app.get('/debug/session.js', function(req, res) {
       var json = JSON.stringify(middleware.tree_, function(key, value) {
         if (value && value.nodeType) {
+          if (value.tagName) {
+            if (value.id) {
+              return '(element ' + value.tagName + '#' + value.id + ')';
+            } else {
+              return '(element ' + value.tagName + ')';
+            }
+          }
           return '(element)';
         } else {
           return value;

@@ -30,20 +30,29 @@
 %start root
 
 %{
-var tagStack = [];
-var result;
-exports.mparse = function(str) {
-  exports.parse(str);
-  return result;
-};
+var oakstacheParse = (function(parser) {
+  return function(str) {
+    oakstacheParse.tagStack = [];
+    parser.parse(str);
+    return oakstacheParse.result;
+  };
+})(parser);
+
+if (typeof exports == 'object') {
+  exports.mparse = oakstacheParse;
+}
+
+if (typeof window == 'object') {
+  window.oakstacheParse = oakstacheParse;
+}
 %}
 
 %%
 
 root
   : statements EOF {
-    $$ = $1.concat(tagStack);
-    result = $$;
+    $$ = $1.concat(oakstacheParse.tagStack);
+    oakstacheParse.result = $$;
   }
   ;
 
@@ -57,8 +66,8 @@ statements
   }
   | statements statement {
     if ($2 === null) {
-    } else if (tagStack.length) {
-      tagStack.push($2);
+    } else if (oakstacheParse.tagStack.length) {
+      oakstacheParse.tagStack.push($2);
     } else {
       $$ = $1.concat([$2]);
     }
@@ -68,19 +77,22 @@ statements
 statement
   : mustache
   | contents %prec UIDCONTENT
+  | OPEN CLOSE {
+    $$ = '';
+  }
   | OPEN_BLOCK pathSegments CLOSE {
-    tagStack.push({ openPath: $2, type: 'loop' });
+    oakstacheParse.tagStack.push({ openPath: $2, type: 'loop' });
     $$ = null;
   }
   | OPEN_INVERSE pathSegments CLOSE {
-    tagStack.push({ openPath: $2, type: 'inverse' });
+    oakstacheParse.tagStack.push({ openPath: $2, type: 'inverse' });
     $$ = null;
   }
   | OPEN_ENDBLOCK pathSegments CLOSE {
     var stmts = [];
     var tag;
-    while (tag = tagStack.pop()) {
-      if ($2 == tag.openPath) {
+    while (tag = oakstacheParse.tagStack.pop()) {
+      if (tag.openPath && $2.join('.') == tag.openPath.join('.')) {
         stmts.reverse();
         $$ = { type: tag.type, path: $2, contents: stmts };
         return;
@@ -107,16 +119,18 @@ content
   ;
 
 mustache
-  : OPEN pathSegments CLOSE
-    { $$ = { type: 'unbound', name: $2, escape: true }; }
-  | OPEN_UNESCAPED pathSegments CLOSE_UNESCAPED
-    { $$ = { type: 'unbound', name: $2, escape: false }; }
+  : OPEN pathSegments CLOSE {
+    $$ = { type: 'unbound', path: $2, escape: true };
+  }
+  | OPEN_UNESCAPED pathSegments CLOSE_UNESCAPED {
+    $$ = { type: 'unbound', path: $2, escape: false };
+  }
   ;
 
 pathSegments
-  : pathSegments SEP pathSegment { $$ = $1 + $3; }
-  | pathSegment
-  | SEP
+  : pathSegments SEP pathSegment { $$ = $1.concat([$3]); }
+  | pathSegment { $$ = [$1]; }
+  | SEP { $$ = ['.']; }
   ;
 
 pathSegment

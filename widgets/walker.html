@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <style>
+      div.result {
+        font-family: monospace;
+        white-space: pre;
+      }
+
+      table {
+        width: 100%;
+        padding: 5px;
+        overflow: hidden;
+      }
+
+      table th {
+        text-align: left;
+      }
+
+      table tr.body td {
+        height: 300px;
+      }
+
+      table tr.body.json td {
+        height: 150px;
+      }
+
+      table td:first-child {
+        width: 50%;
+      }
+
+      table td {
+        vertical-align: top;
+        padding: 10px;
+      }
+
+      @media (max-height: 690px) {
+        table tr.body td {
+          height: 200px;
+        }
+
+        table tr.body.json td {
+          height: 50px;
+        }
+      }
+
+      table td > div {
+        height: 100%;
+        max-height: 100%;
+        overflow: auto;
+      }
+
+      table td div.textarea {
+        height: 100%;
+        overflow: visible;
+      }
+
+      table td textarea {
+        width: 100%;
+        height: 100%;
+        resize: none;
+      }
+    </style>
+
+    <style id='walker'>
+      div.walker {
+        font-family: monospace;
+      }
+
+      div.walker div.units * {
+        color: #393;
+        display: inline-block;
+      }
+
+      div.walker div.unit {
+        margin-right: 1em;
+      }
+
+      div.walker div.declaration {
+        padding-left: 20px;
+        white-space: pre;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <link rel='oak' href='jsonviewer.html'>
+
+    <template name='edit'>
+      <link rel='js' href='#edit.js'>
+      <div class='textarea'>
+        <textarea oak-name='textarea' placeholder='{{help}}'
+                  oak-onkeydown='keydown'>
+        </textarea>
+      </div>
+    </template>
+
+    <script id='edit.js'>
+      Widget.event('edit').listen({
+        model: function(m) {
+          if (this.recv) {
+            Widget.broadcast([this.recv], 'text')(m.text);
+          }
+        },
+
+        rendered: function(m) {
+          this.id = m.id;
+          this.recv = m.recv;
+          if (m.text) {
+            this.el('textarea').value = m.text;
+          }
+
+          var self = this;
+          setTimeout(function() {
+            Widget.broadcast([self.recv], 'text')(m.text);
+          }, 0);
+        },
+
+        keydown: function(ev) {
+          var model = this.emit('model');
+          var id = this.id;
+          setTimeout(function() {
+            model({ text: ev.target.value, id: id });
+          }, 0);
+        }
+      });
+    </script>
+
+    <template name='walker'>
+      <link rel='stylesheet' href='#walker'>
+      <link rel='js' href='../lib/oakstache/parser.js'>
+      <link rel='js' href='../lib/oakstache/handler.js'>
+      <link rel='js' href='../lib/walker/parser.js'>
+      <link rel='js' href='../lib/walker/handler.js'>
+      <link rel='js' href='walker.js'>
+      <div class='walker'> </div>
+    </template>
+
+    <template name='result'>
+      <div class='result'>t</div>
+    </template>
+
+    <table>
+      <tr><th>Walker program</th><th>Representation</th></tr>
+      <tr class='body'>
+        <td>
+          <use mx='edit preserve' id='walkeredit' recv='walkerrep'
+               help='Walker program'></use>
+        </td>
+        <td><use mx='walker walkerrep'></use></td>
+      </tr>
+      <tr><th>JSON to format</th><th>Representation</th></tr>
+      <tr class='body json'>
+        <td>
+          <use mx='edit preserve' id='jsonedit' recv='jsonrep'
+               help='JSON object'></use>
+        </td>
+        <td><use mx='json jsonrep'></use></td>
+      </tr>
+    </table>
+
+    <div style='padding-left: 8px;'>
+      <div style='font-weight: 700; font-size: 16px; margin-bottom: 8px'>
+        JSON converted to a string
+      </div>
+      <use mx='result jsonrep.json walkerrep.walker'></use>
+    </div>
+
+    <script>
+      Widget.event('jsonrep').listen({
+        rendered: function() {
+          this.register();
+        },
+
+        text: function(text) {
+          var json;
+          try {
+            // Hack. Only for sandboxes. Use a function to eval so that lazy
+            // JSON can be specified.
+            var tmp = new Function('return (' + text + ')')();
+            json = JSON.parse(JSON.stringify(tmp));
+          } catch(e) {}
+
+          if (json) {
+            this.emit('model')(json);
+            Widget.broadcast(['jsonrep.json'], 'json')(json);
+          }
+        }
+      });
+
+      Widget.event('walkerrep').listen({
+        rendered: function() {
+          this.register();
+        },
+
+        text: function(text) {
+          var ast;
+          try {
+            ast = walker.parse(text);
+          } catch(e) {}
+
+          if (ast) {
+            this.emit('disposeChildren')();
+            this.el().innerHTML = widget.walker.html(ast);
+
+            var child = this.el().firstChild;
+            for (var i = 0; i < ast.length; i++) {
+              var w = new Widget(['walker.stmt']);
+              w.assign(child, ast[i]);
+              this.addChild(w);
+              child = child.nextSibling;
+            }
+
+            Widget.broadcast(['walkerrep.walker'], 'walker')(ast);
+          }
+        }
+      });
+
+      Widget.event('result').listen({
+        init: function() {
+          this.register();
+        },
+
+        walker: function(ast) {
+          this.walker_ = ast;
+          this.emit('update')();
+        },
+
+        json: function(json) {
+          this.json_ = json;
+          this.emit('update')();
+        },
+
+        update: function() {
+          if (this.walker_ && this.json_) {
+            try {
+              this.el().firstChild.nodeValue =
+                  walker.walk(this.walker_, this.json_);
+            } catch(e) {}
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
