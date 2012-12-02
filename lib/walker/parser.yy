@@ -1,7 +1,7 @@
 // Generates AST for mustache-like language.
 
 %lex
-%x decl
+%x decl quote squote
 
 %%
 
@@ -10,6 +10,12 @@
 <decl>[^\x00\n]+             { return 'CONTENT'; }
 <decl>\n+                    { this.popState(); }
 <decl><<EOF>>                { this.popState(); return 'EOF'; }
+
+<squote>[^\x00\n']           { return 'CONTENT'; }
+<squote>"'"                  { this.popState(); return 'QUOTE'; }
+
+<quote>[^\x00\n"]            { return 'CONTENT'; }
+<quote>"\""                  { this.popState(); return 'QUOTE'; }
 
 \n[ \t]+                     { this.begin('decl'); return 'WHITESPACE'; }
 "literal"                    { return 'LITERAL'; }
@@ -21,8 +27,8 @@
 "["                          { return 'ARR_BEGIN'; }
 "]"                          { return 'ARR_END'; }
 "="                          { return 'EQ'; }
-"\""                         { return 'QUOTE'; }
-"'"                          { return 'QUOTE'; }
+"\""                         { this.begin('quote'); return 'QUOTE'; }
+"'"                          { this.begin('squote'); return 'QUOTE'; }
 [ \t]+                       { return 'SEP_SPACE'; }
 \.                           { return 'SEP_DOT'; }
 \n+                          {}
@@ -84,6 +90,9 @@ selector_part
   }
   | NUMBER { $$ = { unit: { type: 'any_number' }, path: [] }; }
   | QUOTE QUOTE { $$ = { unit: { type: 'any_string' }, path: [] }; }
+  | QUOTE content QUOTE {
+    $$ = { unit: { type: 'string' }, content: $2, path: [] };
+  }
   ;
 
 selector_prop
@@ -109,11 +118,16 @@ selector_obj_unit
   ;
 
 declaration
-  : WHITESPACE CONTENT { walkerParse.whitespace = $1.length - 1; $$ = $2; }
-  | declaration WHITESPACE CONTENT {
+  : WHITESPACE content { walkerParse.whitespace = $1.length - 1; $$ = $2; }
+  | declaration WHITESPACE content {
     if ($2.length - 1 < walkerParse.whitespace) {
       throw new Error('Not enough whitespace');
     }
     $$ = $1 + '\n' + $2.substr(1, $2.length - walkerParse.whitespace - 1) + $3;
   }
+  ;
+
+content
+  : CONTENT
+  | content CONTENT { $$ = $1 + $2; }
   ;
