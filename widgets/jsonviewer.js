@@ -59,7 +59,7 @@ widget.json = {
   }
 };
 
-Widget.event.listen({
+Widget.implement({
   disposeChildren: function() {
     var children = this.children();
     for (var i = 0; i < children.length; i++) {
@@ -68,7 +68,7 @@ Widget.event.listen({
   }
 });
 
-Widget.event('jsonchild').listen({
+Widget.implement('jsonchild', {
   find: function(el) {
     while (el && el.className.indexOf('branch') == -1) {
       el = el.parentNode;
@@ -155,13 +155,13 @@ Widget.event('jsonchild').listen({
   }
 });
 
-Widget.event('json').listen({
+Widget.implement('json', {
   rendered: function(obj) {
-    this.el().addEventListener('click', this.emit('click'), false);
+    this.el().addEventListener('click', this.click, false);
   },
 
   model: function(obj) {
-    this.emit('disposeChildren')();
+    this.disposeChildren();
 
     if (window.session) {
       obj = window.session;
@@ -173,7 +173,7 @@ Widget.event('json').listen({
   },
 
   click: function(ev) {
-    var widget = this.children()[0].emit('find')(ev.target);
-    widget.emit('expand')();
+    var widget = this.children()[0].find(ev.target);
+    widget.expand();
   }
 });

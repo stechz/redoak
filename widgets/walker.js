@@ -50,7 +50,7 @@ widget.walker = {
   }
 };
 
-Widget.event('walker.stmt').listen({
+Widget.implement('walker.stmt', {
   els: function() {
     return {
       units: this.el().firstChild,
@@ -71,7 +71,7 @@ Widget.event('walker.stmt').listen({
   }
 });
 
-Widget.event('walker.unit').listen({
+Widget.implement('walker.unit', {
   rendered: function(m) {
     if (m.unit.type == 'object') {
       var child = this.el().firstChild;

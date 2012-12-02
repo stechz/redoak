@@ -41,7 +41,7 @@
 </template>
 
 <script id='tabs.js'>
-  Widget.event('tabs').listen({
+  Widget.implement('tabs', {
     model: function(m) {
       var titles = [];
       if (m.titles && m.titles.length) {
@@ -58,7 +58,7 @@
       this.el('titles').childNodes[active].className += ' active';
 
       this.titles_ = m.titles;
-      this.emit('activate')(active);
+      this.activate(active);
     },
 
     setActive: function(nodes, i, lastI) {
@@ -74,10 +74,10 @@
     activate: function(i) {
       if (i >= 0 && i < this.titles_.length) {
         var childNodes = this.el('titles').firstChild.childNodes;
-        this.emit('setActive')(childNodes, i, this.active_);
+        this.setActive(childNodes, i, this.active_);
 
         var childNodes = this.el('content').childNodes;
-        this.emit('setActive')(childNodes, i, this.active_);
+        this.setActive(childNodes, i, this.active_);
 
         this.active_ = i;
       }
@@ -87,7 +87,7 @@
       var children = Array.prototype.slice.call(
           this.el('titles').firstChild.childNodes);
       var index = children.indexOf(ev.target);
-      this.emit('activate')(index);
+      this.activate(index);
     }
   });
 </script>

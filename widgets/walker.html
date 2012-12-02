@@ -8,9 +8,15 @@
       }
 
       div.tabs div.content {
-        height: 500px;
+        height: 450px;
         overflow: auto;
         padding: 5px;
+      }
+
+      @media (max-height: 690px) {
+        div.tabs div.content {
+          height: 200px;
+        }
       }
 
       div.result {
@@ -50,12 +56,6 @@
       table td {
         vertical-align: top;
         padding: 10px;
-      }
-
-      @media (max-height: 690px) {
-        table tr.body td {
-          height: 200px;
-        }
       }
 
       table td > div {
@@ -112,7 +112,7 @@
     </template>
 
     <script id='edit.js'>
-      Widget.event('edit').listen({
+      Widget.implement('edit', {
         model: function(m) {
           if (this.recv) {
             Widget.broadcast([this.recv], 'text')(m.text);
@@ -133,10 +133,9 @@
         },
 
         keydown: function(ev) {
-          var model = this.emit('model');
-          var id = this.id;
+          var self = this;
           setTimeout(function() {
-            model({ text: ev.target.value, id: id });
+            self.model({ text: ev.target.value, id: self.id });
           }, 0);
         }
       });
@@ -190,13 +189,13 @@
     </div>
 
     <script>
-      Widget.event('tabs').listen({
+      Widget.implement('tabs', {
         init: function() {
           this.register();
         },
 
         nextTab: function() {
-          this.emit('activate')((this.active_ + 1) % this.titles_.length);
+          this.activate((this.active_ + 1) % this.titles_.length);
         },
 
         getActiveContent: function() {
@@ -209,12 +208,12 @@
           setTimeout(function() {
             self.el('content').appendChild(tables[0]);
             self.el('content').appendChild(tables[1]);
-            self.emit('activate')(0);
+            self.activate(0);
           }, 0);
         }
       });
 
-      Widget.event('edit').listen({
+      Widget.implement('edit', {
         keydown: function(ev) {
           if (String.fromCharCode(ev.keyCode) == '\t') {
             ev.preventDefault();
@@ -225,7 +224,7 @@
         }
       });
 
-      Widget.event('jsonrep').listen({
+      Widget.implement('jsonrep', {
         rendered: function() {
           this.register();
         },
@@ -240,13 +239,13 @@
           } catch(e) {}
 
           if (json) {
-            this.emit('model')(json);
+            this.model(json);
             Widget.broadcast(['jsonrep.json'], 'json')(json);
           }
         }
       });
 
-      Widget.event('walkerrep').listen({
+      Widget.implement('walkerrep', {
         rendered: function() {
           this.register();
         },
@@ -258,7 +257,7 @@
           } catch(e) {}
 
           if (ast) {
-            this.emit('disposeChildren')();
+            this.disposeChildren();
             this.el().innerHTML = widget.walker.html(ast);
 
             var child = this.el().firstChild;
@@ -274,19 +273,19 @@
         }
       });
 
-      Widget.event('result').listen({
+      Widget.implement('result', {
         init: function() {
           this.register();
         },
 
         walker: function(ast) {
           this.walker_ = ast;
-          this.emit('update')();
+          this.update();
         },
 
         json: function(json) {
           this.json_ = json;
-          this.emit('update')();
+          this.update();
         },
 
         update: function() {
