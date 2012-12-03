@@ -33,6 +33,7 @@
 <!-- TODO We can't currently include widgets in a loop.  Fix this!  -->
 <template name='tabs'>
   <link rel='stylesheet' href='#tabs'>
+  <link rel='js' href='widget.js'>
   <link rel='js' href='#tabs.js'>
   <div class='tabs'>
     <div class='titles' oak-onclick='tabClick' oak-name='titles'></div>
@@ -88,6 +89,19 @@
           this.el('titles').firstChild.childNodes);
       var index = children.indexOf(ev.target);
       this.activate(index);
+    },
+
+    adoptContent: function(node) {
+      var sibling;
+      node = node.firstChild;
+      while (node) {
+        sibling = node.nextSibling;
+        if (node.nodeType == node.ELEMENT_NODE) {
+          this.el('content').appendChild(node);
+        }
+        node = sibling;
+      }
+      this.activate(0);
     }
   });
 </script>

@@ -163,10 +163,6 @@ Widget.implement('json', {
   model: function(obj) {
     this.disposeChildren();
 
-    if (window.session) {
-      obj = window.session;
-    }
-
     var widget = new Widget(['jsonchild']);
     widget.render(this.el(), null, { key: null, value: obj });
     this.addChild(widget);

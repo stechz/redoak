@@ -91,3 +91,28 @@ Widget.implement('walker.unit', {
     this.el().lastChild.firstChild.nodeValue = path;
   }
 });
+
+Widget.implement('walker.result', {
+  init: function() {
+    this.register();
+  },
+
+  walker: function(ast) {
+    this.walker_ = ast;
+    this.update();
+  },
+
+  json: function(json) {
+    this.json_ = json;
+    this.update();
+  },
+
+  update: function() {
+    if (this.walker_ && this.json_) {
+      try {
+        this.el().firstChild.nodeValue =
+            walker.walk(this.walker_, this.json_);
+      } catch(e) {}
+    }
+  }
+});

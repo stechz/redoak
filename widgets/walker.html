@@ -101,48 +101,11 @@
   <body>
     <link rel='oak' href='jsonviewer.html'>
     <link rel='oak' href='tabs.html'>
-
-    <template name='edit'>
-      <link rel='js' href='#edit.js'>
-      <div class='textarea'>
-        <textarea oak-name='textarea' placeholder='{{help}}'
-                  oak-onkeydown='keydown'>
-        </textarea>
-      </div>
-    </template>
-
-    <script id='edit.js'>
-      Widget.implement('edit', {
-        model: function(m) {
-          if (this.recv) {
-            Widget.broadcast([this.recv], 'text')(m.text);
-          }
-        },
-
-        rendered: function(m) {
-          this.id = m.id;
-          this.recv = m.recv;
-          if (m.text) {
-            this.el('textarea').value = m.text;
-          }
-
-          var self = this;
-          setTimeout(function() {
-            Widget.broadcast([self.recv], 'text')(m.text);
-          }, 0);
-        },
-
-        keydown: function(ev) {
-          var self = this;
-          setTimeout(function() {
-            self.model({ text: ev.target.value, id: self.id });
-          }, 0);
-        }
-      });
-    </script>
+    <link rel='oak' href='edit.html'>
 
     <template name='walker'>
       <link rel='stylesheet' href='#walker'>
+      <link rel='js' href='widget.js'>
       <link rel='js' href='../lib/oakstache/parser.js'>
       <link rel='js' href='../lib/oakstache/handler.js'>
       <link rel='js' href='../lib/walker/parser.js'>
@@ -151,13 +114,14 @@
       <div class='walker'> </div>
     </template>
 
-    <template name='result'>
-      <div class='result'>t</div>
+    <template name='walker.result'>
+      <link rel='js' href='widget.js'>
+      <div class='result'>-</div>
     </template>
 
     <use mx='tabs'>{ "titles": ["Program", "JSON"] }</use>
 
-    <div style='display: none'>
+    <div class='tables' style='display: none'>
       <table>
         <tr><th>Walker program</th><th>Representation</th></tr>
         <tr class='body'>
@@ -168,7 +132,6 @@
           <td><use mx='walker walkerrep'></use></td>
         </tr>
       </table>
-
       <table>
         <tr><th>JSON to format</th><th>Representation</th></tr>
         <tr class='body json'>
@@ -185,7 +148,7 @@
       <div style='font-weight: 700; font-size: 16px; margin-bottom: 8px'>
         JSON converted to a string
       </div>
-      <use mx='result jsonrep.json walkerrep.walker'></use>
+      <use mx='walker.result jsonrep.json walkerrep.walker'></use>
     </div>
 
     <script>
@@ -203,12 +166,9 @@
         },
 
         rendered: function() {
-          var tables = document.querySelectorAll('body > div > table');
           var self = this;
           setTimeout(function() {
-            self.el('content').appendChild(tables[0]);
-            self.el('content').appendChild(tables[1]);
-            self.activate(0);
+            self.adoptContent(document.querySelector('body > div.tables'));
           }, 0);
         }
       });
@@ -269,31 +229,6 @@
             }
 
             Widget.broadcast(['walkerrep.walker'], 'walker')(ast);
-          }
-        }
-      });
-
-      Widget.implement('result', {
-        init: function() {
-          this.register();
-        },
-
-        walker: function(ast) {
-          this.walker_ = ast;
-          this.update();
-        },
-
-        json: function(json) {
-          this.json_ = json;
-          this.update();
-        },
-
-        update: function() {
-          if (this.walker_ && this.json_) {
-            try {
-              this.el().firstChild.nodeValue =
-                  walker.walk(this.walker_, this.json_);
-            } catch(e) {}
           }
         }
       });

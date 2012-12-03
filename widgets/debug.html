@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <style>
+      textarea {
+        display: block;
+        width: 40em;
+        height: 500px;
+        resize: none;
+      }
+
+      table td {
+        padding: 5px;
+        vertical-align: top;
+      }
+
+      div.result {
+        font-family: monospace;
+        white-space: pre;
+      }
+    </style>
+  </head>
+  <body>
+    <link rel='oak' href='tabs.html'>
+    <link rel='oak' href='edit.html'>
+    <link rel='oak' href='walker.html'>
+    <link rel='oak' href='jsonviewer.html'>
+
+    <template name='root'>
+      <div>
+        <div class='tabs'>
+          <use mx='tabs'>{
+            "titles": ["Oak tree", "Walker program"]
+          }</use>
+        </div>
+        <div class='tabcontents' oak-name='tabcontents' style='display: none'>
+          <use mx='json'></use>
+          <table>
+            <tr>
+              <td><use mx='edit'></use></td>
+              <td><use mx='walker.result'></use></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </template>
+
+    <use mx='root' id='debug'></use>
+
+    <script>
+      Widget.implement('edit', {
+        model: function(m) {
+          var ast;
+          try {
+            ast = walker.parse(m.text);
+          } catch(e) {}
+
+          if (ast) {
+            Widget.broadcast(['walker.result'], 'walker')(ast);
+          }
+        }
+      });
+
+      Widget.implement('root', {
+        rendered: function() {
+          var children = this.children();
+          this.tabs = children[0];
+          this.json = children[1];
+          this.edit = children[2];
+          this.result = children[3];
+          this.tabs.adoptContent(this.el('tabcontents'));
+
+          if (window.session) {
+            this.json.model(window.session);
+            this.result.json(window.session);
+          }
+        }
+      });
+    </script>
+
+    <script src='session.js' oak-no></script>
+  </body>
+</html>
