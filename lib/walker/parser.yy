@@ -97,7 +97,7 @@ selector_part
 
 selector_prop
   : ID { $$ = [$1] }
-  | selector_prop SEP_DOT ID { $$ = $1.concat([$2]); }
+  | selector_prop SEP_DOT ID { $$ = $1.concat([$3]); }
   ;
 
 selector_unit
@@ -109,7 +109,7 @@ selector_unit
 
 selector_obj
   : selector_obj_unit { $$ = [$1]; }
-  | selector_obj SEP_SPACE selector_obj_unit { $$ = $1.concat([$2]); }
+  | selector_obj SEP_SPACE selector_obj_unit { $$ = $1.concat([$3]); }
   ;
 
 selector_obj_unit
