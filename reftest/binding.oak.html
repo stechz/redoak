@@ -6,19 +6,19 @@
   <body>
     <template name='foo'>
       <div class='foo'>
-        <div oak-name='mydiv'>Foo {{text}}.</div>
-        <use mixins='button'>{ "text": "{{text}}" }</use>
-        <use mixins='button'>{ "text": "oh my {{text}}" }</use>
+        <div oak-name='mydiv'>Foo {{value}}.</div>
+        <use mx='button'>{{value}}</use>
+        <use mx='button'>oh my {{value}}</use>
       </div>
     </template>
 
     <template name='button'>
-      <button class='bar'>I am a button: {{text}}</button>
+      <button class='bar'>I am a button: {{value}}</button>
     </template>
 
     <div>
       Shall we use foo?
     </div>
-    <use mixins='foo'>{ "text": "hi" }</use>
+    <use mixins='foo'>hi</use>
   </body>
 </html>

@@ -1,0 +1,18 @@
+<template name='list'>
+  <ul>
+    {{#children}}
+      <use mx='list.item'>test</use>
+    {{/children}}
+  </ul>
+</template>
+
+<template name='list.item'>
+  <li>{{value}}</li>
+</template>
+
+<use mx='list'>
+  <obj>This</obj>
+  <obj>is</obj>
+  <obj>a</obj>
+  <obj>list</obj>
+</use>

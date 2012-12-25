@@ -3,11 +3,11 @@
     {{#has_entries}}
     <table>
       <tbody>
-        {{#arr}}
+        {{#children}}
         <tr>
-          <td>{{.}}</td>
+          <td>{{value}}</td>
         </tr>
-        {{/arr}}
+        {{/children}}
       </tbody>
     </table>
     {{/has_entries}}
@@ -18,5 +18,5 @@
   </div>
 </template>
 
-<use mx='loop' has_entries>{ "arr": [1, 2, 3] }</use>
-<use mx='loop'>{ "arr": [] }</use>
+<use mx='loop' has_entries><obj>1</obj><obj>2</obj><obj>3</obj></use>
+<use mx='loop'></use>
