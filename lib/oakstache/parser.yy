@@ -81,11 +81,11 @@ statement
     $$ = '';
   }
   | OPEN_BLOCK pathSegments CLOSE {
-    oakstacheParse.tagStack.push({ openPath: $2, type: 'loop' });
+    oakstacheParse.tagStack.push({ openPath: $2, openType: 'loop' });
     $$ = null;
   }
   | OPEN_INVERSE pathSegments CLOSE {
-    oakstacheParse.tagStack.push({ openPath: $2, type: 'inverse' });
+    oakstacheParse.tagStack.push({ openPath: $2, openType: 'inverse' });
     $$ = null;
   }
   | OPEN_ENDBLOCK pathSegments CLOSE {
@@ -94,14 +94,12 @@ statement
     while (tag = oakstacheParse.tagStack.pop()) {
       if (tag.openPath && $2.join('.') == tag.openPath.join('.')) {
         stmts.reverse();
-        $$ = { type: tag.type, path: $2, contents: stmts };
+        $$ = { type: tag.openType, path: $2, contents: stmts };
         return;
       }
       stmts.push(tag);
     }
-    stmts.reverse();
-    stmts.push($2);
-    $$ = null;
+    $$ = { type: 'endblock', openPath: $2 };
   }
   | COMMENT { $$ = null; }
   ;

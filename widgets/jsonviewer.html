@@ -86,9 +86,12 @@
       <div class='json'></div>
     </template>
 
-    <use mx='json'>
-      { "name": "123", }
-    </use>
+    <script>
+      (function() {
+        var widget = new Widget(['json']);
+        widget.render(document.body, null, { name: '123' });
+      })();
+    </script>
 
     <script src='session.js' oak-no></script>
   </body>
