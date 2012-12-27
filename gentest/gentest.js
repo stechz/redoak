@@ -13,10 +13,7 @@ var document;
 var files = fs.readdirSync(__dirname);
 var LOAD_WIDGETS = _.compact(files.map(function(x) {
   if (x.match(/\.oak\.html$/)) {
-    return {
-      filename: path.resolve(__dirname, x),
-      type: 'oak'
-    };
+    return { filename: path.resolve(__dirname, x), type: 'oak' };
   }
 }));
 
@@ -29,6 +26,18 @@ function testBasic() {
 
   widget.emit('fill')({ text: 'new text' });
   assert.equal(widget.el('mydiv').textContent, 'Foo new text.');
+
+  widget.dispose();
+  assert.ok(!document.querySelector('div.foo'));
+}
+
+function testList() {
+  var widget = new Widget(['list']);
+  var model = { children: [{ value: 1 }, { value: 2 }] };
+  widget.render(document.body, null, model);
+  assert.equal(document.querySelectorAll('li')[0].textContent, '1');
+  assert.equal(document.querySelectorAll('li')[1].textContent, '2');
+  assert.equal(widget.children().length, 2);
 }
 
 // Set up browser-like environment.
@@ -47,7 +56,9 @@ eval(widgetjs);
 
 var tree = new dependencies.tree(LOAD_WIDGETS, function(tree) {
   var genwidgetjs = render.widgetJS(tree);
+//  console.log(genwidgetjs);
   eval(genwidgetjs);
 
   testBasic();
+  testList();
 });

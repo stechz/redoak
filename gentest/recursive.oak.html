@@ -16,25 +16,5 @@
       <link rel='js' href='widget.js'>
       <li>{{value}}</li>
     </template>
-
-    <use mx='list'>
-      <obj>This</obj>
-      <obj>is</obj>
-      <obj>a</obj>
-      <obj>list</obj>
-    </use>
-
-    <script>
-      Widget.implement('list', {
-        rendered: function() {
-          var self = this;
-          self.fill({ children: [
-              { value: 'new list' },
-              { value: 'of' },
-              { value: 'all the things' }
-              ] });
-        }
-      });
-    </script>
   </body>
 </html>
