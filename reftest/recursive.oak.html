@@ -7,11 +7,11 @@
 </template>
 
 <template name='list.item'>
-  <li>{{value}}</li>
+  <li class='{{#first}}first{{/first}}'>{{value}}</li>
 </template>
 
 <use mx='list'>
-  <obj>This</obj>
+  <obj first>This</obj>
   <obj>is</obj>
   <obj>a</obj>
   <obj>list</obj>
