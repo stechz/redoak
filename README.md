@@ -125,12 +125,18 @@ contains the Widget prototype.
 For all tests, if no output is generated after you run the node script,
 congratulations, it passed!
 
-A few library files have unit tests:
+To run all the tests:
 
-    node lib/oakstache/handler.js
-    node lib/walker/handler.js
+    node test.js
+
+## Unit tests
+
+Some of the library files have unit tests. You can just run the file to see if
+they pass. For example:
+
     node lib/fileobj.js
-    node lib/dependencies.js
+
+## Reftests
 
 Reftests check output of oak files (`*.oak.html`) with expected HTML output
 (`*.html`). To run:
@@ -138,6 +144,8 @@ Reftests check output of oak files (`*.oak.html`) with expected HTML output
     node reftest/reftest.js
 
 It diffs the output of a sample oak file with the expected HTML.
+
+## Gentests
 
 Finally, there's now some basic sanity tests for the automatically generated
 Javascript. To run:
