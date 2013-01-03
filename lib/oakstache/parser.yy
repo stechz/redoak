@@ -1,27 +1,36 @@
 // Generates AST for mustache-like language.
 
 %lex
+%x decl if loop reg inner
 
 %%
 
-"{{!"[\s\S]*?"}}"            { /* return 'COMMENT'; */ }
+<INITIAL>"{/}"               { return 'OPEN_ENDBLOCK'; }
 
-"{{#"                        { return 'OPEN_BLOCK'; }
-"{{/"                        { return 'OPEN_ENDBLOCK'; }
-"{{^"                        { return 'OPEN_INVERSE'; }
-"{{{"                        { return 'OPEN_UNESCAPED'; }
-"{{"                         { return 'OPEN'; }
+<reg>"}}}"                   { this.popState(); return 'CLOSE_UNESCAPED'; }
+<reg>"}}"                    { this.popState(); return 'CLOSE'; }
 
-"}}}"                        { return 'CLOSE_UNESCAPED'; }
-"}}"                         { return 'CLOSE'; }
-[a-zA-Z0-9_$-]+              { return 'ID'; }
-\.                           { return 'SEP'; }
+<if>"not"                    { return 'NOT'; }
+<if>"is"                     { return 'IS'; }
+<if>".i"                     { return 'I'; }
+<if>".last"                  { return 'LAST'; }
 
-\s+                          { return 'WHITESPACE'; }
-[^\x00{]+                    { return 'CONTENT'; }
-"{"                          { return 'CONTENT'; }
+<if,loop,reg>[a-zA-Z0-9_$-]+ { return 'ID'; }
+<if,loop,reg>"../"           { return 'BACKOUT'; }
+<if,loop,reg>"."             { return 'SEP'; }
+<if,loop,reg>\s+             { /* return 'WHITESPACE'; */ }
+<if,loop>"}"                 { this.popState(); this.begin('inner');
+                               return 'OPEN_CLOSE'; }
 
-<<EOF>>                      { return 'EOF'; }
+<inner>"{/}"                 { return 'OPEN_ENDBLOCK'; }
+
+<inner,INITIAL>"{.if"        { this.begin('if'); return 'OPEN_IF'; }
+<inner,INITIAL>"{.loop"      { this.begin('loop'); return 'OPEN_LOOP'; }
+<inner,INITIAL>"{{{"         { this.begin('reg'); return 'OPEN_UNESCAPED'; }
+<inner,INITIAL>"{{"          { this.begin('reg'); return 'OPEN'; }
+<inner,INITIAL>[^\x00{]+     { return 'CONTENT'; }
+<inner,INITIAL>"{"           { return 'CONTENT'; }
+<inner,INITIAL><<EOF>>       { return 'EOF'; }
 
 /lex
 
@@ -80,40 +89,57 @@ statement
   | OPEN CLOSE {
     $$ = '';
   }
-  | OPEN_BLOCK pathSegments CLOSE {
-    oakstacheParse.tagStack.push({ openPath: $2, openType: 'loop' });
+  | OPEN_LOOP pathSegments OPEN_CLOSE {
+    oakstacheParse.tagStack.push(
+        { obj: { type: 'loop', path: $2 }, open: true });
     $$ = null;
   }
-  | OPEN_INVERSE pathSegments CLOSE {
-    oakstacheParse.tagStack.push({ openPath: $2, openType: 'inverse' });
+  | OPEN_IF ifStatement OPEN_CLOSE {
+    oakstacheParse.tagStack.push({
+        obj: { type: 'if', clause: $2 }, open: true });
     $$ = null;
   }
-  | OPEN_ENDBLOCK pathSegments CLOSE {
+  | OPEN_ENDBLOCK {
     var stmts = [];
     var tag;
     while (tag = oakstacheParse.tagStack.pop()) {
-      if (tag.openPath && $2.join('.') == tag.openPath.join('.')) {
+      if (tag.open) {
         stmts.reverse();
-        $$ = { type: tag.openType, path: $2, contents: stmts };
+        $$ = tag.obj;
+        $$.contents = stmts;
         return;
       }
       stmts.push(tag);
     }
-    $$ = { type: 'endblock', openPath: $2 };
+    $$ = { close: true };
   }
   | COMMENT { $$ = null; }
   ;
 
-contents
-  : content
-  | contents content { $$ = $1 + $2; }
+ifStatement
+  : lvalue { $$ = { type: 'simple', path: $1 }; }
+  | NOT lvalue { $$ = { type: 'inverse', path: $2 }; }
+  | lvalue IS rvalue {
+    $$ = { type: 'eq', path: $1, value: $3 };
+  }
+  | NOT lvalue IS rvalue {
+    $$ = { type: 'neq', path: $2, value: $4 };
+  }
   ;
 
-content
+lvalue
+  : pathSegments
+  | I { $$ = { type: 'i' }; }
+  ;
+
+rvalue
   : ID
-  | CONTENT
-  | SEP
-  | WHITESPACE
+  | LAST { $$ = { type: 'last' }; }
+  ;
+
+contents
+  : CONTENT
+  | contents content { $$ = $1 + $2; }
   ;
 
 mustache
@@ -126,12 +152,17 @@ mustache
   ;
 
 pathSegments
-  : pathSegments SEP pathSegment { $$ = $1.concat([$3]); }
-  | pathSegment { $$ = [$1]; }
-  | SEP { $$ = ['.']; }
+  : pathSegment
+  | backOuts pathSegment { $$ = [{ backout: $1 }].concat($2); }
+  | SEP { $$ = []; }
   ;
 
 pathSegment
-  : ID
-  | WHITESPACE { $$ = ''; }
+  : ID { $$ = [$1]; }
+  | pathSegment SEP ID { $$ = $1.concat([$3]); }
+  ;
+
+backOuts
+  : backOuts BACKOUT { $$ = $1 + 1; }
+  | BACKOUT { $$ = 1; }
   ;

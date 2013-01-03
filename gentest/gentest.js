@@ -56,8 +56,14 @@ eval(widgetjs);
 
 var tree = new dependencies.tree(LOAD_WIDGETS, function(tree) {
   var genwidgetjs = render.widgetJS(tree);
-  eval(genwidgetjs);
+  try {
+    eval(genwidgetjs);
 
-  testBasic();
-  testList();
+    testBasic();
+    testList();
+  } catch(e) {
+    console.log('genwidgetjs:');
+    console.log(genwidgetjs);
+    throw e;
+  }
 });

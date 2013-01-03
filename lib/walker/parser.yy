@@ -1,5 +1,3 @@
-// Generates AST for mustache-like language.
-
 %lex
 %x decl quote squote
 

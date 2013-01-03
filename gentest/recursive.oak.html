@@ -6,9 +6,9 @@
   <body>
     <template name='list'>
       <ul>
-        {{#children}}
+        {.loop children}
           <use mx='list.item'></use>
-        {{/children}}
+        {/}
       </ul>
     </template>
 
