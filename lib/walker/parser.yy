@@ -27,6 +27,7 @@
 "="                          { return 'EQ'; }
 "\""                         { this.begin('quote'); return 'QUOTE'; }
 "'"                          { this.begin('squote'); return 'QUOTE'; }
+[ \t]*\>[ \t]*               { return 'SEP_GT'; }
 [ \t]+                       { return 'SEP_SPACE'; }
 \.                           { return 'SEP_DOT'; }
 \n+                          {}
@@ -82,15 +83,16 @@ selector
   ;
 
 selector_part
-  : selector_unit { $$ = { unit: $1, path: [] }; }
+  : selector_unit { $$ = { type: 'simple', unit: $1, path: [] }; }
   | selector_unit SEP_DOT selector_prop {
-    $$ = { unit: $1, path: $3 };
+    $$ = { type: 'prop', unit: $1, path: $3 };
   }
-  | NUMBER { $$ = { unit: { type: 'any_number' }, path: [] }; }
-  | QUOTE QUOTE { $$ = { unit: { type: 'any_string' }, path: [] }; }
-  | QUOTE content QUOTE {
-    $$ = { unit: { type: 'string' }, content: $2, path: [] };
-  }
+  | selector_gt { $$ = { type: 'gt', units: $1, path: [] }; }
+  ;
+
+selector_gt
+  : selector_unit SEP_GT selector_unit { $$ = [$1, $3]; }
+  | selector_gt SEP_GT selector_unit { $$ = $1.concat($3); }
   ;
 
 selector_prop
@@ -103,6 +105,9 @@ selector_unit
   | OBJ_BEGIN selector_obj OBJ_END { $$ = { type: 'object', filters: $2 }; }
   | ARR_BEGIN ARR_END { $$ = { type: 'any_array' }; }
   | ANY { $$ = { type: 'any' }; }
+  | NUMBER { $$ = { type: 'any_number' }; }
+  | QUOTE QUOTE { $$ = { type: 'any_string' }; }
+  | QUOTE content QUOTE { $$ = { type: 'string', content: $2 }; }
   ;
 
 selector_obj
