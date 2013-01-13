@@ -24,8 +24,8 @@
 
 <inner>"{/}"                 { return 'OPEN_ENDBLOCK'; }
 
-<inner,INITIAL>"{.if"        { this.begin('if'); return 'OPEN_IF'; }
-<inner,INITIAL>"{.loop"      { this.begin('loop'); return 'OPEN_LOOP'; }
+<inner,INITIAL>"{if"         { this.begin('if'); return 'OPEN_IF'; }
+<inner,INITIAL>"{loop"       { this.begin('loop'); return 'OPEN_LOOP'; }
 <inner,INITIAL>"{{{"         { this.begin('reg'); return 'OPEN_UNESCAPED'; }
 <inner,INITIAL>"{{"          { this.begin('reg'); return 'OPEN'; }
 <inner,INITIAL>[^\x00{]+     { return 'CONTENT'; }
