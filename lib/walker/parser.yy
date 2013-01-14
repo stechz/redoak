@@ -83,21 +83,17 @@ selector
   ;
 
 selector_part
-  : selector_unit { $$ = { type: 'simple', unit: $1, path: [] }; }
-  | selector_unit SEP_DOT selector_prop {
-    $$ = { type: 'prop', unit: $1, path: $3 };
+  : selector_part SEP_DOT selector_prop {
+    $$ = { sep: '.', lhs: $1, rhs: $3 };
   }
-  | selector_gt { $$ = { type: 'gt', units: $1, path: [] }; }
-  ;
-
-selector_gt
-  : selector_unit SEP_GT selector_unit { $$ = [$1, $3]; }
-  | selector_gt SEP_GT selector_unit { $$ = $1.concat($3); }
+  | selector_part SEP_GT selector_unit {
+    $$ = { sep: '>', lhs: $1, rhs: $3 };
+  }
+  | selector_unit { $$ = { sep: '', unit: $1 }; }
   ;
 
 selector_prop
-  : ID { $$ = [$1] }
-  | selector_prop SEP_DOT ID { $$ = $1.concat([$3]); }
+  : ID
   ;
 
 selector_unit

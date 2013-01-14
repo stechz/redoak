@@ -5,32 +5,37 @@
 
 %%
 
-<INITIAL>"{/}"               { return 'OPEN_ENDBLOCK'; }
+<INITIAL>"{/}"                { return 'OPEN_ENDBLOCK'; }
 
-<reg>"}}}"                   { this.popState(); return 'CLOSE_UNESCAPED'; }
-<reg>"}}"                    { this.popState(); return 'CLOSE'; }
+<reg>"}}"                     { this.popState(); return 'CLOSE_UNESCAPED'; }
+<reg>"}"                      { this.popState(); return 'CLOSE'; }
 
-<if>"not"                    { return 'NOT'; }
-<if>"is"                     { return 'IS'; }
-<if>".i"                     { return 'I'; }
-<if>".last"                  { return 'LAST'; }
+<if>"not"                     { return 'NOT'; }
+<if>"is"                      { return 'IS'; }
+<if>".i"                      { return 'I'; }
+<if>".last"                   { return 'LAST'; }
 
-<if,loop,reg>[a-zA-Z0-9_$-]+ { return 'ID'; }
-<if,loop,reg>"../"           { return 'BACKOUT'; }
-<if,loop,reg>"."             { return 'SEP'; }
-<if,loop,reg>\s+             { /* return 'WHITESPACE'; */ }
-<if,loop>"}"                 { this.popState(); this.begin('inner');
-                               return 'OPEN_CLOSE'; }
+<if,loop,reg>[a-zA-Z0-9_$-]+  { return 'ID'; }
+<if,loop,reg>"../"            { return 'BACKOUT'; }
+<if,loop,reg>"."              { return 'SEP'; }
+<if,loop,reg>\s+              { /* return 'WHITESPACE'; */ }
+<if,loop>"}"                  { this.popState(); this.begin('inner');
+                                return 'OPEN_CLOSE'; }
 
-<inner>"{/}"                 { return 'OPEN_ENDBLOCK'; }
+<inner>"{/}"                  { return 'OPEN_ENDBLOCK'; }
 
-<inner,INITIAL>"{if"         { this.begin('if'); return 'OPEN_IF'; }
-<inner,INITIAL>"{loop"       { this.begin('loop'); return 'OPEN_LOOP'; }
-<inner,INITIAL>"{{{"         { this.begin('reg'); return 'OPEN_UNESCAPED'; }
-<inner,INITIAL>"{{"          { this.begin('reg'); return 'OPEN'; }
-<inner,INITIAL>[^\x00{]+     { return 'CONTENT'; }
-<inner,INITIAL>"{"           { return 'CONTENT'; }
-<inner,INITIAL><<EOF>>       { return 'EOF'; }
+<inner,INITIAL>'{"""'[^\x00\x22]*'"""}' { return 'LITERAL'; }
+<inner,INITIAL>\{if\s+        { this.begin('if'); return 'OPEN_IF'; }
+<inner,INITIAL>\{loop\s+      { this.begin('loop'); return 'OPEN_LOOP'; }
+
+// These lovely incantations allow for things like "{ foo" and "{#" to be
+// parsed as content instead of getting a parser complaint.
+<inner,INITIAL>'{'/([a-zA-Z0-9_$-\./]*\})    { this.begin('reg'); return 'OPEN'; }
+<inner,INITIAL>'{{'/([a-zA-Z0-9_$-\./]*\}\}) { this.begin('reg'); return 'OPEN_UNESCAPED'; }
+
+<inner,INITIAL>"{"            { return 'CONTENT'; }
+<inner,INITIAL>[^\x00{]+      { return 'CONTENT'; }
+<inner,INITIAL><<EOF>>        { return 'EOF'; }
 
 /lex
 
@@ -114,6 +119,7 @@ statement
     $$ = { close: true };
   }
   | COMMENT { $$ = null; }
+  | LITERAL { $$ = { type: 'lit', value: $1.substring(4, $1.length - 4) }; }
   ;
 
 ifStatement

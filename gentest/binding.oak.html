@@ -8,9 +8,9 @@
       <link rel='js' href='widget.js'>
       <link rel='js' href='#foo.js'>
       <div class='foo'>
-        <div oak-name='mydiv'>Foo {{text}}.</div>
-        <use mixins='button'>{ "text": "{{text}}" }</use>
-        <use mixins='button'>{ "text": "oh my {{text}}" }</use>
+        <div oak-name='mydiv'>Foo {text}.</div>
+        <use mixins='button'>{text}</use>
+        <use mixins='button'>oh my {text}</use>
       </div>
     </template>
 
@@ -23,7 +23,7 @@
     </script>
 
     <template name='button'>
-      <button class='bar'>I am a button: {{text}}</button>
+      <button class='bar'>I am a button: {text}</button>
     </template>
   </body>
 </html>
