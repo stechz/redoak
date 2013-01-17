@@ -1,22 +1,22 @@
 <template name='loop'>
   <div>
-    {{#has_entries}}
+    {if children}
     <table>
       <tbody>
-        {{#children}}
+        {loop children}
         <tr>
-          <td>{{value}}</td>
+          <td>{value}</td>
         </tr>
-        {{/children}}
+        {/}
       </tbody>
     </table>
-    {{/has_entries}}
+    {/}
 
-    {{^has_entries}}
+    {if not children}
     No entries.
-    {{/has_entries}}
+    {/}
   </div>
 </template>
 
-<use mx='loop' has_entries><obj>1</obj><obj>2</obj><obj>3</obj></use>
+<use mx='loop'><obj>1</obj><obj>2</obj><obj>3</obj></use>
 <use mx='loop'></use>

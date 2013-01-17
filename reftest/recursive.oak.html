@@ -1,13 +1,13 @@
 <template name='list'>
   <ul>
-    {{#children}}
+    {loop children}
       <use mx='list.item'></use>
-    {{/children}}
+    {/}
   </ul>
 </template>
 
 <template name='list.item'>
-  <li class='{{#first}}first{{/first}}'>{{value}}</li>
+  <li class='{if first}first{/}'>{value}</li>
 </template>
 
 <use mx='list'>

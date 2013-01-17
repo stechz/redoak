@@ -92,7 +92,7 @@ statement
   : mustache
   | contents %prec UIDCONTENT
   | OPEN CLOSE {
-    $$ = '';
+    $$ = '{}';
   }
   | OPEN_LOOP pathSegments OPEN_CLOSE {
     oakstacheParse.tagStack.push(

@@ -6,7 +6,7 @@
   <body>
     <template name='list'>
       <ul>
-        {.loop children}
+        {loop children}
           <use mx='list.item'></use>
         {/}
       </ul>
@@ -14,7 +14,7 @@
 
     <template name='list.item'>
       <link rel='js' href='widget.js'>
-      <li>{{value}}</li>
+      <li>{value}</li>
     </template>
   </body>
 </html>
