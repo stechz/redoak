@@ -11,7 +11,7 @@
     "Sheet": "1.0.2rc1",
     "uglify-js": "2.2.2",
     "underscore": "1.4.3",
-    "websocket": "1.0.7"
+    "websocket": "1.0.8"
   },
   "keywords": ["framework", "html5", "web"],
   "bin": { "redoak": "./bin/redoak" },
