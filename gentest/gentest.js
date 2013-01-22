@@ -33,8 +33,14 @@ function testBasic() {
 
 function testList() {
   var widget = new Widget(['list']);
-  var model = { children: [{ value: 1 }, { value: 2 }] };
+  var model = {
+    children: [
+      { type: 'item', value: 1 },
+      { type: 'item', value: 2 }
+    ]
+  };
   widget.render(document.body, null, model);
+  console.log(document.body.innerHTML);
   assert.equal(document.querySelectorAll('li')[0].textContent, '1');
   assert.equal(document.querySelectorAll('li')[1].textContent, '2');
   assert.equal(widget.children().length, 2);
