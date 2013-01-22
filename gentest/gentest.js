@@ -35,15 +35,23 @@ function testList() {
   var widget = new Widget(['list']);
   var model = {
     children: [
+      { type: 'header', value: 'Numbers' },
       { type: 'item', value: 1 },
       { type: 'item', value: 2 }
     ]
   };
   widget.render(document.body, null, model);
-  console.log(document.body.innerHTML);
-  assert.equal(document.querySelectorAll('li')[0].textContent, '1');
-  assert.equal(document.querySelectorAll('li')[1].textContent, '2');
-  assert.equal(widget.children().length, 2);
+
+  var lis = document.querySelectorAll('li');
+  assert.equal(lis.length, 3);
+  assert.equal(lis[0].firstChild.tagName, 'H2');
+  assert.equal(lis[1].textContent, '1');
+  assert.equal(lis[2].textContent, '2');
+
+  assert.equal(widget.children().length, 3);
+  assert.equal(widget.children()[0].el(), lis[0]);
+  assert.equal(widget.children()[1].el(), lis[1]);
+  assert.equal(widget.children()[2].el(), lis[2]);
 }
 
 // Set up browser-like environment.
