@@ -28,7 +28,10 @@ and file lots of bugs! Patches are appreciated as well.
 
 # Diving in
 
-You will need node and npm to get started.
+You will need node and npm to get started. If you are new to node, after you
+download redoak, you will need to run in the redoak directory:
+
+    npm install
 
 The best way to get the gist of it is to try it. After you install redoak, just
 run:
@@ -178,11 +181,3 @@ don't, there's some work that still needs to be done. :)
 - Emma Zhou: typo in README.
 - Itai Zuckerman: todo example delete functionality. Bugfix for preserve mixin
   and disposing widgets. Bugfix for event listeners.
-
-# Future design considerations
-
-* Code sharing via `emit()`. Callling `emit(fname)()` has an awkward feel, but
-  it has some advantages: possible lazy optimization, and lets unimplemented
-  methods be a noop instead of an error. Neither of these seem particularly
-  important, and JS programmers will be more familiar with a typical call
-  structure (isn't it already weird enough? :)).
