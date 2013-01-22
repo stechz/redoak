@@ -1,8 +1,9 @@
 var _ = require('underscore');
-var dependencies = require('../dependencies');
+var dependencies = require('../lib/dependencies');
+var fileobj = require('../lib/fileobj');
 var fs = require('fs');
 var path = require('path');
-var render = require('../render');
+var render = require('../lib/render');
 
 /** Tidy by damned, we'll do it our own way. */
 function pretty(element) {
@@ -71,13 +72,9 @@ files.forEach(function(file) {
 
   var fileObj = { filename: file, type: 'oak' };
   dependencies.tree([fileObj], function(tree) {
-    var element = dependencies.parseHTML(
+    var element = fileobj.parseHTML(
         render.html(tree, function(f) { return path.basename(f.filename); }));
     var document = element.ownerDocument;
-
-    _(document.querySelectorAll('script')).each(function(s) {
-      s.parentNode.removeChild(s);
-    });
 
     var error = function(msg) {
       if (!error.called) {

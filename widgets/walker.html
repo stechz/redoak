@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <style>
+      div.tabs {
+        margin-bottom: 15px;
+      }
+
+      div.tabs div.content {
+        height: 450px;
+        overflow: auto;
+        padding: 5px;
+      }
+
+      @media (max-height: 690px) {
+        div.tabs div.content {
+          height: 200px;
+        }
+      }
+
+      div.result {
+        font-family: monospace;
+        white-space: pre;
+      }
+
+      table {
+        width: 100%;
+        height: 100%;
+        padding: 5px;
+        overflow: hidden;
+        border: 0;
+        border-collapse: collapse;
+      }
+
+      table th {
+        text-align: left;
+      }
+
+      table td {
+        width: 50%;
+        height: 100%;
+      }
+
+      table tr {
+        padding: 0;
+        margin: 0;
+      }
+
+      table td:last-child, table th:last-child {
+        border-left: 5px solid #eee;
+        margin: 0;
+        padding: 0 20px;
+      }
+
+      table td {
+        vertical-align: top;
+        padding: 10px;
+      }
+
+      table td > div {
+        height: 100%;
+        max-height: 100%;
+        overflow: auto;
+      }
+
+      table td div.textarea {
+        height: 100%;
+        overflow: visible;
+      }
+
+      table td textarea {
+        width: 100%;
+        height: 100%;
+        resize: none;
+      }
+    </style>
+
+    <style id='walker'>
+      div.walker {
+        font-family: monospace;
+      }
+
+      div.walker div.units * {
+        color: #393;
+        display: inline-block;
+      }
+
+      div.walker div.unit {
+        margin-right: 1em;
+      }
+
+      div.walker div.declaration {
+        padding-left: 20px;
+        white-space: pre;
+        margin-bottom: 20px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <link rel='oak' href='jsonviewer.html'>
+    <link rel='oak' href='tabs.html'>
+    <link rel='oak' href='edit.html'>
+
+    <template name='walker'>
+      <link rel='stylesheet' href='#walker'>
+      <link rel='js' href='widget.js'>
+      <link rel='js' href='../lib/oakstache/parser.js'>
+      <link rel='js' href='../lib/oakstache/handler.js'>
+      <link rel='js' href='../lib/walker/parser.js'>
+      <link rel='js' href='../lib/walker/handler.js'>
+      <link rel='js' href='walker.js'>
+      <div class='walker'> </div>
+    </template>
+
+    <template name='walker.result'>
+      <link rel='js' href='widget.js'>
+      <div class='result'>-</div>
+    </template>
+
+    <use mx='tabs'>{ "titles": ["Program", "JSON"] }</use>
+
+    <div class='tables' style='display: none'>
+      <table>
+        <tr><th>Walker program</th><th>Representation</th></tr>
+        <tr class='body'>
+          <td>
+            <use mx='edit preserve' id='walkeredit' recv='walkerrep'
+                 help='Walker program'></use>
+          </td>
+          <td><use mx='walker walkerrep'></use></td>
+        </tr>
+      </table>
+      <table>
+        <tr><th>JSON to format</th><th>Representation</th></tr>
+        <tr class='body json'>
+          <td>
+            <use mx='edit preserve' id='jsonedit' recv='jsonrep'
+                 help='JSON object'></use>
+          </td>
+          <td><use mx='json jsonrep'></use></td>
+        </tr>
+      </table>
+    </div>
+
+    <div style='padding-left: 8px;'>
+      <div style='font-weight: 700; font-size: 16px; margin-bottom: 8px'>
+        JSON converted to a string
+      </div>
+      <use mx='walker.result jsonrep.json walkerrep.walker'></use>
+    </div>
+
+    <script>
+      Widget.implement('tabs', {
+        init: function() {
+          this.register();
+        },
+
+        nextTab: function() {
+          this.activate((this.active_ + 1) % this.titles_.length);
+        },
+
+        getActiveContent: function() {
+          return this.el('content').childNodes[this.active_];
+        },
+
+        rendered: function() {
+          var self = this;
+          setTimeout(function() {
+            self.adoptContent(document.querySelector('body > div.tables'));
+          }, 0);
+        }
+      });
+
+      Widget.implement('edit', {
+        keydown: function(ev) {
+          if (String.fromCharCode(ev.keyCode) == '\t') {
+            ev.preventDefault();
+            Widget.broadcast(['tabs'], 'nextTab')();
+            var tab = Widget.broadcast(['tabs'], 'getActiveContent')();
+            tab.querySelector('textarea').focus();
+          }
+        }
+      });
+
+      Widget.implement('jsonrep', {
+        rendered: function() {
+          this.register();
+        },
+
+        text: function(text) {
+          var json;
+          try {
+            // Hack. Only for sandboxes. Use a function to eval so that lazy
+            // JSON can be specified.
+            var tmp = new Function('return (' + text + ')')();
+            json = JSON.parse(JSON.stringify(tmp));
+          } catch(e) {}
+
+          if (json) {
+            this.model(json);
+            Widget.broadcast(['jsonrep.json'], 'json')(json);
+          }
+        }
+      });
+
+      Widget.implement('walkerrep', {
+        rendered: function() {
+          this.register();
+        },
+
+        text: function(text) {
+          var ast;
+          try {
+            ast = walker.parse(text);
+          } catch(e) {}
+
+          if (ast) {
+            this.disposeChildren();
+            this.el().innerHTML = widget.walker.html(ast);
+
+            var child = this.el().firstChild;
+            for (var i = 0; i < ast.length; i++) {
+              var w = new Widget(['walker.stmt']);
+              w.assign(child, ast[i]);
+              this.addChild(w);
+              child = child.nextSibling;
+            }
+
+            Widget.broadcast(['walkerrep.walker'], 'walker')(ast);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+<template name='edit'>
+  <link rel='js' href='widget.js'>
+  <link rel='js' href='#edit.js'>
+  <div class='textarea'>
+    <textarea oak-name='textarea' placeholder='{{help}}'
+              oak-onkeydown='keydown'>
+    </textarea>
+  </div>
+</template>
+
+<script id='edit.js'>
+  Widget.implement('edit', {
+    model: function(m) {
+      if (this.recv) {
+        Widget.broadcast([this.recv], 'text')(m.text);
+      }
+    },
+
+    rendered: function(m) {
+      this.id = m.id;
+      this.recv = m.recv;
+      if (m.text) {
+        this.el('textarea').value = m.text;
+      }
+
+      var self = this;
+      setTimeout(function() {
+        Widget.broadcast([self.recv], 'text')(m.text);
+      }, 0);
+    },
+
+    keydown: function(ev) {
+      var self = this;
+      setTimeout(function() {
+        self.model({ text: ev.target.value, id: self.id });
+      }, 0);
+    }
+  });
+</script>

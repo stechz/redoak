@@ -18,13 +18,12 @@ if (useStd >= 0) {
 
     var middleware = new redoak.Middleware();
     middleware.once('tree', function() {
-      console.log(middleware.html());
       middleware.dispose();
     });
     middleware.addString(data);
   });
 } else {
-  var filename = argv[0]
+  var filename = argv[0];
   if (!filename) {
     console.error('Must specify an oak file.');
     process.exit(1);
@@ -40,7 +39,52 @@ if (useStd >= 0) {
 
     var middleware = new redoak.Middleware({ app: app });
     middleware.addFile(filename);
+
     app.get('/', middleware.get(filename));
+
+    app.get('/debug/js', function(req, res) {
+     res.end(middleware.js(filename));
+    });
+
+    app.get('/debug/css', function(req, res) {
+      res.end(middleware.css(filename));
+    });
+
+    var debug = path.resolve(__dirname, '../widgets/debug.html');
+    app.get('/debug/', function(req, res) {
+      var respond = function() {
+        res.end(middleware.html(debug));
+      };
+
+      if (!middleware.html(debug)) {
+        middleware.addFile(debug);
+        middleware.emitter_.once('tree', respond);
+      } else {
+        respond();
+      }
+    });
+    app.get('/debug/session.js', function(req, res) {
+      var obj = {
+        files: middleware.tree_.files_,
+        tree: middleware.tree_.tree_
+      };
+      var json = JSON.stringify(obj, function(key, value) {
+        if (value && value.nodeType) {
+          if (value.tagName) {
+            if (value.id) {
+              return '(element ' + value.tagName + '#' + value.id + ')';
+            } else {
+              return '(element ' + value.tagName + ')';
+            }
+          }
+          return '(element)';
+        } else {
+          return value;
+        }
+        });
+      res.end('var session = ' + json);
+    });
+
     app.use('/', express.static(path.dirname(filename)));
   });
 

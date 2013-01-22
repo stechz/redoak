@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+  </head>
+  <body>
+    <template name='foo'>
+      <div class='foo'>
+        <div oak-name='mydiv'>Foo {value}.</div>
+        <use mx='button'>{value}</use>
+        <use mx='button'>oh my {value}</use>
+      </div>
+    </template>
+
+    <template name='button'>
+      <button class='bar'>I am a button: {value}</button>
+    </template>
+
+    <div>
+      Shall we use foo?
+    </div>
+    <use mixins='foo'>hi</use>
+  </body>
+</html>

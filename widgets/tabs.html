@@ -1,0 +1,108 @@
+<style id='tabs'>
+  div.tabs {
+  }
+
+  div.tabs div.title {
+    display: inline-block;
+    border: 1px solid #aaa;
+    padding: 10px 14px;
+    cursor: pointer;
+  }
+
+  div.tabs div.title.active {
+    background-color: #444;
+    color: white;
+  }
+
+  div.content {
+    border: 1px solid #aaa;
+    margin-top: -1px;
+    min-height: 30px;
+  }
+
+  div.content > *:not(.active) {
+    display: none;
+  }
+</style>
+
+<!-- TODO Figure out a good way to do loops when a new model comes in!  -->
+<template name='tabs.titles'>
+  <div>{{#titles}}<div class='title'>{{.}}</div>{{/titles}}</div>
+</template>
+
+<!-- TODO We can't currently include widgets in a loop.  Fix this!  -->
+<template name='tabs'>
+  <link rel='stylesheet' href='#tabs'>
+  <link rel='js' href='widget.js'>
+  <link rel='js' href='#tabs.js'>
+  <div class='tabs'>
+    <div class='titles' oak-onclick='tabClick' oak-name='titles'></div>
+    <div class='content' oak-name='content'></div>
+  </div>
+</template>
+
+<script id='tabs.js'>
+  Widget.implement('tabs', {
+    model: function(m) {
+      var titles = [];
+      if (m.titles && m.titles.length) {
+        titles = m.titles;
+      }
+
+      var active = 0;
+      if (m.active >= 0 && m.active < m.titles.length) {
+        active = m.active;
+      }
+
+      var titles = Widget.event('tabs.titles').emitter();
+      this.el('titles').innerHTML = titles('html')(m);
+      this.el('titles').childNodes[active].className += ' active';
+
+      this.titles_ = titles;
+      this.activate(active);
+    },
+
+    setActive: function(nodes, i, lastI) {
+      if (nodes[lastI]) {
+        nodes[lastI].className =
+            nodes[lastI].className.replace(' active', '');
+      }
+      if (nodes[i]) {
+        nodes[i].className += ' active';
+      }
+    },
+
+    activate: function(i) {
+      if (i >= 0 && i < this.titles_.length) {
+        var childNodes = this.el('titles').firstChild.childNodes;
+        this.setActive(childNodes, i, this.active_);
+
+        var childNodes = this.el('content').childNodes;
+        this.setActive(childNodes, i, this.active_);
+
+        this.active_ = i;
+      }
+    },
+
+    tabClick: function(ev) {
+      var children = Array.prototype.slice.call(
+          this.el('titles').firstChild.childNodes);
+      var index = children.indexOf(ev.target);
+      this.activate(index);
+    },
+
+    adoptContent: function(node) {
+      var sibling;
+      node = node.firstChild;
+      while (node) {
+        sibling = node.nextSibling;
+        if (node.nodeType == node.ELEMENT_NODE) {
+          this.el('content').appendChild(node);
+        }
+        node = sibling;
+      }
+      this.activate(0);
+    }
+  });
+</script>
+

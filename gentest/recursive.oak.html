@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+  </head>
+  <body>
+    <!--
+
+    In order to rigorously test our ability to loop through use tags and ensure
+    that children widgets are properly assigned, we do two things:
+
+    1) Allow two different widget types to be created in the same loop to make
+       sure the right widget types are created.
+    2) Allow no widgets in the loop to make sure no widget is created.
+    3) Append some HTML after a widget inside the inner loop, to make sure the
+       widget is assigned to its proper element.
+
+     -->
+
+    <template name='list'>
+      <ul>
+        {loop children}
+          {if type is header}
+            <use mx='list.header'></use>
+          {/}
+          {if type is item}
+            <use mx='list.item'></use>
+          {/}
+          <p>Some postfix HTML.</p>
+        {/}
+      </ul>
+    </template>
+
+    <template name='list.header'>
+      <li><h2>{value}</h2></li>
+    </template>
+
+    <template name='list.item'>
+      <link rel='js' href='widget.js'>
+      <li>{value}</li>
+    </template>
+  </body>
+</html>

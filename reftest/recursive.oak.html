@@ -1,0 +1,18 @@
+<template name='list'>
+  <ul>
+    {loop children}
+      <use mx='list.item'></use>
+    {/}
+  </ul>
+</template>
+
+<template name='list.item'>
+  <li class='{if first}first{/}'>{value}</li>
+</template>
+
+<use mx='list'>
+  <obj first>This</obj>
+  <obj>is</obj>
+  <obj>a</obj>
+  <obj>list</obj>
+</use>

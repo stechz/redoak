@@ -65,7 +65,7 @@ create and dispose groups of widgets with a single call.
 
 ### Methods of Widget
 
-See `lib/public/basewidget.js` for now.
+See `lib/public/widget.js` for now.
 
 ### Lifecycle of Widget
 
@@ -115,30 +115,42 @@ widget code and the final HTML.
 
 ### Client side code
 
-All in `lib/public/`. The important file is really `basewidget.js`, which
+All in `lib/public/`. The important file is really `widget.js`, which
 contains the Widget prototype.
 
 `lib/public/util.js` contains the code for events.
 
 # Testing
 
+For all tests, if no output is generated after you run the node script,
+congratulations, it passed!
+
+To run all the tests:
+
+    node test.js
+
+## Unit tests
+
+Some of the library files have unit tests. You can just run the file to see if
+they pass. For example:
+
+    node lib/fileobj.js
+
+## Reftests
+
 Reftests check output of oak files (`*.oak.html`) with expected HTML output
 (`*.html`). To run:
 
-    node lib/reftest/reftest.js
+    node reftest/reftest.js
 
-It diffs the output of a sample oak file with the expected HTML. If nothing is
-outputted, congratulations, it passed!
+It diffs the output of a sample oak file with the expected HTML.
 
-Dependencies also has some unit tests, since it's the most complicated bit of
-code. Try:
-
-    node lib/dependencies.js
+## Gentests
 
 Finally, there's now some basic sanity tests for the automatically generated
 Javascript. To run:
 
-    node lib/test-generated-js.js
+    node gentest/gentest.js
 
 # Using it in your web app
 

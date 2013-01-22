@@ -5,7 +5,7 @@
     <title>TODO app</title>
   </head>
   <body>
-    <template name='todo:app'>
+    <template name='todo.app'>
       <link rel='stylesheet' href='todo.css'></link>
       <link rel='js' href='widget.js'></link>
       <link rel='js' href='todo.js'></link>
@@ -16,7 +16,7 @@
                  placeholder='What needs to be done?' autocomplete='off'>
           </input>
         </form>
-        <use mixins='todo'>{ "id": 1, "text": "remember the milk" }</use>
+        <use mixins='todo' id='1'>remember the milk</use>
         <div class='actions'>
           <button oak-onclick='deleteTodos'>Clear all checked todos</button>
         </div>
@@ -25,13 +25,13 @@
 
     <template name='todo'>
       <div class='todo'>
-        <input id='todo-item-{{id}}' type='checkbox' autocomplete='off'
+        <input id='todo-item-{id}' type='checkbox' autocomplete='off'
                oak-onclick='click' oak-name='checkbox'>
         </input>
-        <label for='todo-item-{{id}}'>{{text}}</label>
+        <label for='todo-item-{id}'>{value}</label>
       </div>
     </template>
 
-    <use mixins='todo:app preserve'>{ "id": "todo:app" }</use>
+    <use mixins='todo.app preserve' id='todo.app'></use>
   </body>
 </html>
