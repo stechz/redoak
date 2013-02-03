@@ -4,6 +4,7 @@ var path = require('path');
 var TESTS = [
   'lib/oakstache/handler.js',
   'lib/walker/handler.js',
+  'lib/queryselector.js',
   'lib/dependencies.js',
   'lib/fileobj.js',
   'lib/render.js',

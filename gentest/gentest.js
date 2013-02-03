@@ -54,6 +54,19 @@ function testList() {
   assert.equal(widget.children()[2].el(), lis[2]);
 }
 
+function testContainer() {
+  var widget = new Widget(['container']);
+  var model = { type: 'child', x: 'spam' };
+  widget.render(document.body, null, model);
+
+  assert.equal(widget.el().tagName, 'DIV');
+
+  //TODO
+  //var p = widget.el().firstElementChild;
+  //assert.equal(p.tagName, 'P');
+  //assert.equal(p.textContent, 'A paragraph of spam!');
+}
+
 // Set up browser-like environment.
 
 document = fileobj.parseHTML('').ownerDocument;
@@ -76,6 +89,7 @@ var tree = new dependencies.tree(LOAD_WIDGETS, function(tree) {
 
     testBasic();
     testList();
+    testContainer();
   } catch(e) {
     console.log('genwidgetjs:');
     console.log(genwidgetjs);
