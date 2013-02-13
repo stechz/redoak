@@ -3,7 +3,7 @@
 var _ = require('underscore');
 var assert = require('assert');
 var dependencies = require('../lib/dependencies');
-var fileobj = require('../lib/fileobj');
+var html = require('../lib/html');
 var fs = require('fs');
 var path = require('path');
 var render = require('../lib/render');
@@ -69,7 +69,7 @@ function testContainer() {
 
 // Set up browser-like environment.
 
-document = fileobj.parseHTML('').ownerDocument;
+document = html.parseHTML('').ownerDocument;
 
 var utilJsName = path.resolve(__dirname, '../lib/public/util.js');
 var utiljs = fs.readFileSync(utilJsName, 'utf-8');

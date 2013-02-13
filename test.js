@@ -2,14 +2,15 @@ var child = require('child_process');
 var path = require('path');
 
 var TESTS = [
-  'lib/oakstache/handler.js',
-  'lib/walker/handler.js',
-  'lib/queryselector.js',
+  'gentest/gentest.js',
   'lib/dependencies.js',
-  'lib/fileobj.js',
+  'lib/fileobj/fileobj.js',
+  'lib/html.js',
+  'lib/oakstache/handler.js',
+  'lib/queryselector.js',
   'lib/render.js',
-  'reftest/reftest.js',
-  'gentest/gentest.js'
+  'lib/walker/handler.js',
+  'reftest/reftest.js'
 ];
 
 var output = new Array(TESTS.length);

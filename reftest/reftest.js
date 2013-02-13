@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var dependencies = require('../lib/dependencies');
-var fileobj = require('../lib/fileobj');
 var fs = require('fs');
+var parsehtml = require('../lib/html');
 var path = require('path');
 var render = require('../lib/render');
 
@@ -72,7 +72,7 @@ files.forEach(function(file) {
 
   var fileObj = { filename: file, type: 'oak' };
   dependencies.tree([fileObj], function(tree) {
-    var element = fileobj.parseHTML(
+    var element = parsehtml.parseHTML(
         render.html(tree, function(f) { return path.basename(f.filename); }));
     var document = element.ownerDocument;
 
